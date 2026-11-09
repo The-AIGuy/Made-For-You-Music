@@ -1,0 +1,8 @@
+{
+  "name": "M4UM – Made For You Music",
+  "description": "Personalised songwriting and digital music gift platform by TMG®. Custom song ordering, lyric review and approval workflows, digital delivery, customer portal, and comprehensive admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

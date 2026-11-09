@@ -1,0 +1,1449 @@
+# M4UM – Made For You Music
+## Complete Full-Stack Business Website, Customer Portal and Admin Management System
+
+You are building a complete, production-oriented full-stack web application for **M4UM – Made For You Music**, a personalised songwriting and digital music gift business based in Aotearoa New Zealand.
+
+This is a complete business application, NOT a static website, landing page, visual prototype, demonstration or collection of mockups.
+
+Build a real, functional application with:
+- A beautiful public-facing business website.
+- Customer registration and login.
+- A complete personalised song ordering system.
+- Persistent database storage.
+- A secure customer dashboard.
+- A comprehensive private admin dashboard.
+- Order management and production workflows.
+- Lyric writing, revision and approval functionality.
+- Secure file uploads and digital delivery.
+- Customer notifications.
+- Payment integration architecture.
+- Analytics and business reporting.
+
+Every feature must be implemented with real functionality wherever technically possible.
+
+Do not simply create buttons that look functional. Every interactive element must perform its intended action.
+
+---
+
+# 1. BUSINESS IDENTITY AND BRANDING
+
+## Business identity
+
+**Full business name:** Made For You Music
+
+**Brand shorthand:** M4UM
+
+**Brand attribution:** By TMG®
+
+**Copyright footer:**
+
+© 2026 TMG Enterprises, LLC. All rights reserved.
+
+The brand should be presented as:
+
+M4UM  
+Made For You Music  
+By TMG®
+
+M4UM is the shorthand brand identity. Made For You Music remains the full business name.
+
+Do not rename the business or invent alternative brand names.
+
+Use the requested copyright wording and branding consistently.
+
+## Brand personality
+
+The brand should feel:
+- Colourful.
+- Playful.
+- Creative.
+- Joyful.
+- Professional.
+- Trustworthy.
+- Heartfelt.
+- Personal.
+- Modern.
+- Premium without being intimidating.
+
+It should appeal to people buying meaningful personalised music gifts for friends, family, partners and special occasions.
+
+Avoid making the design childish, overly corporate, generic or excessively minimalist.
+
+## Official colour palette
+
+Use these exact colours:
+
+- Deep Purple: #421078
+- Vibrant Pink: #F51B91
+- Tangerine: #FF9B24
+- Sunshine Yellow: #FFD52A
+- Electric Cyan: #08BFE8
+- White: #FFFFFF
+
+Use purple as a primary brand colour, with pink, orange, yellow and cyan as vibrant accents.
+
+Maintain readable contrast and consistent colour usage.
+
+## Typography
+
+- Headings: Fraunces.
+- Body text and interface: Google Sans.
+
+Investigate legitimate ways to use Google Sans. Do not silently substitute a different font.
+
+If Google Sans cannot be used, explain why and request approval before choosing a replacement.
+
+## Official logos
+
+Two official logo assets will be supplied:
+
+1. Full M4UM / Made For You Music wordmark.
+2. Standalone M icon.
+
+Use the exact supplied artwork.
+
+Rules:
+- Do not redraw the logos.
+- Do not approximate them.
+- Do not change their colours.
+- Do not distort their proportions.
+- Do not replace them with generic music icons.
+- Use the full logo in the main website header and footer.
+- Use the standalone M for the favicon and compact placements.
+
+If the assets are not accessible, use a clearly labelled temporary placeholder rather than inventing a replacement.
+
+---
+
+# 2. TECHNICAL ARCHITECTURE
+
+Build a genuine full-stack application.
+
+Preferred architecture:
+
+### Frontend
+- React.
+- TypeScript.
+- Modern responsive CSS.
+- Reusable components.
+- Accessible forms and navigation.
+- Responsive layouts for mobile, tablet and desktop.
+
+### Backend
+Use a secure backend architecture capable of:
+- Authentication.
+- Database operations.
+- Protected API endpoints.
+- File upload handling.
+- Order processing.
+- Notifications.
+- Role-based permissions.
+
+### Database
+Use a persistent database, preferably Supabase with PostgreSQL.
+
+The application must retain data after refreshing, logging out, deploying a new version or restarting the server.
+
+Do not use local browser storage as the primary database.
+
+Browser storage may be used for temporary unfinished order-form answers, but submitted orders must be stored persistently.
+
+### Hosting and deployment
+Prepare the application for deployment using a suitable hosting provider.
+
+Keep the project exportable and portable.
+
+Do not lock the entire application into an AI website builder.
+
+Provide clear setup instructions for:
+- Environment variables.
+- Database configuration.
+- Authentication.
+- File storage.
+- Deployment.
+- External integrations.
+
+Never expose secret API keys in frontend code.
+
+---
+
+# 3. PUBLIC WEBSITE
+
+Create the following pages:
+
+1. Home
+2. How It Works
+3. Listen
+4. Pricing
+5. About Us
+6. Contact
+7. Create Your Song
+8. Customer Login
+9. Customer Registration
+10. Forgot Password
+11. Order Confirmation
+12. Track My Order
+13. Customer Dashboard
+14. Privacy Policy
+15. Terms and Conditions
+
+Use consistent navigation and branding.
+
+The public website must be usable without creating an account.
+
+## Homepage
+
+Hero heading:
+
+**Every Story Deserves Its Own Song.**
+
+Supporting text:
+
+Turn your memories, inside jokes and favourite people into a personalised song they'll never forget.
+
+Primary button:
+Create Your Song
+
+Secondary button:
+Explore Packages
+
+Show three trust points:
+
+- From $34.99 NZD.
+- You approve the lyrics first.
+- Delivered digitally.
+
+Additional sections:
+
+### How it works
+A visual explanation of the ordering and production journey.
+
+### Our packages
+Display all three packages with accurate pricing and inclusions.
+
+### Music styles
+Show examples of possible genres and moods.
+
+### Why M4UM?
+Explain how each song is based on the customer's real story rather than a generic template.
+
+### Listen
+Show genuine approved song examples when available.
+
+### Final call to action
+Encourage visitors to create a personalised song.
+
+Do not invent testimonials, customer reviews, finished songs or business statistics.
+
+If no genuine examples exist, show a well-designed empty state explaining that examples are coming soon.
+
+---
+
+# 4. PRODUCTS AND PRICING
+
+All prices are in New Zealand dollars (NZD).
+
+There are exactly three main packages.
+
+Do not invent additional packages or change the prices.
+
+## Package 1: The Personal Song
+
+**Price: $34.99 NZD**
+
+Includes:
+- One personalised song, approximately 2–3 minutes.
+- Original lyrics based on the customer's submitted story.
+- Choice of music genre.
+- Choice of mood.
+- One round of lyric changes before production.
+- Finished MP3 download.
+- Custom digital cover artwork.
+
+## Package 2: The Signature Song
+
+**Price: $54.99 NZD**
+
+Display a prominent but tasteful MOST POPULAR label.
+
+Includes everything in The Personal Song, plus:
+- More detailed personalisation.
+- Up to two rounds of lyric changes before production.
+- Two musical versions for the customer to choose between.
+- Printable lyrics sheet.
+
+## Package 3: The Ultimate Gift
+
+**Price: $85.00 NZD**
+
+Includes everything in The Signature Song, plus:
+- Personalised photo lyric video.
+- Up to 10 customer-supplied photos.
+- Custom digital gift card.
+- QR code linking to the finished song.
+- Private digital gift page.
+- Priority production.
+
+## Pricing rules
+
+- Display all prices in NZD.
+- Payments are one-time payments, not subscriptions.
+- Clearly show all package inclusions.
+- Do not advertise unlimited revisions.
+- Do not invent additional fees.
+- Do not claim commercial music rights are included.
+- Clearly explain the difference between packages.
+- The selected package must be stored with the order.
+
+Do not introduce additional paid add-ons until specifically configured by an administrator.
+
+---
+
+# 5. HOW IT WORKS
+
+Explain the process in seven clear stages:
+
+1. Choose your package.
+2. Tell us about the recipient.
+3. Share memories, stories and inside jokes.
+4. We write your personalised lyrics.
+5. You review and approve the lyrics.
+6. We produce and quality-check your song.
+7. Your finished digital gift is delivered.
+
+Be transparent about the production process.
+
+M4UM creates original personalised lyrics and creatively directs music production, using AI-assisted music generation and editing where applicable.
+
+Do not claim that every song is performed by a human vocalist or recorded in a traditional studio.
+
+The customer must understand that their lyrics are reviewed and approved before final music production begins.
+
+---
+
+# 6. CUSTOMER REGISTRATION AND AUTHENTICATION
+
+Implement a complete authentication system.
+
+Customers must be able to:
+
+- Create an account.
+- Register using email and password.
+- Log in.
+- Log out.
+- Reset forgotten passwords.
+- Change their password.
+- Update their account details.
+- View their account information.
+- View their previous orders.
+
+Use secure authentication through Supabase Auth or an equivalent service.
+
+Requirements:
+- Passwords must never be stored in plaintext.
+- Protect private customer routes.
+- Validate authentication on the backend.
+- Prevent customers from accessing other customers' accounts.
+- Provide useful authentication error messages.
+- Support persistent sessions securely.
+
+The application must have two distinct user roles:
+
+**Customer**
+- Can access their own account and orders.
+- Can submit orders.
+- Can review lyrics.
+- Can approve lyrics.
+- Can request revisions.
+- Can download available deliverables.
+
+**Administrator**
+- Can access the private admin dashboard.
+- Can manage customers.
+- Can manage orders.
+- Can update production statuses.
+- Can write and edit lyrics.
+- Can manage deliverables.
+- Can manage business settings.
+
+Never allow public visitors to register as administrators.
+
+Administrator accounts must be created through a secure setup process or authorised invitation.
+
+---
+
+# 7. COMPLETE MULTI-STEP ORDERING SYSTEM
+
+Create a polished, easy-to-use ordering experience.
+
+The form must have seven steps with a visible progress indicator:
+
+1. Package
+2. Occasion
+3. Recipient
+4. Music
+5. Direction
+6. Your Details
+7. Review
+
+Customers must be able to move backwards and forwards without losing their answers.
+
+Save unfinished form answers temporarily in the browser.
+
+Only create a permanent order after successful submission.
+
+## Step 1: Package
+
+Display the three packages.
+
+Customers must select exactly one.
+
+Display:
+- Package name.
+- Price.
+- Description.
+- Complete inclusions.
+
+Allow changing the selected package before submission.
+
+## Step 2: Occasion
+
+Provide these options:
+
+- Birthday
+- Anniversary
+- Wedding
+- Friendship
+- Family
+- Graduation
+- Thank You
+- Christmas
+- Valentine's Day
+- Other
+
+Allow custom text when Other is selected.
+
+## Step 3: Recipient
+
+Collect:
+
+- Recipient's name.
+- Relationship to customer.
+- Nickname.
+- Personality traits.
+- Interests and hobbies.
+- Important memories.
+- Funny stories.
+- Inside jokes.
+- Special phrases or expressions.
+- Details that must be included.
+- Anything that should not be mentioned.
+
+Use helpful prompts and examples without making the form overwhelming.
+
+## Step 4: Music preferences
+
+Collect:
+
+### Genre
+- Pop
+- Acoustic / Folk
+- Rock
+- Country
+- R&B / Soul
+- Electronic
+- Indie
+- Hip-Hop
+- Musical Theatre
+- Other
+
+### Mood
+- Heartfelt
+- Happy
+- Funny
+- Romantic
+- Triumphant
+- Nostalgic
+- Emotional
+- Inspirational
+
+### Vocal preference
+- Male vocal
+- Female vocal
+- Duet
+- No preference
+
+### Energy
+- Gentle and intimate
+- Warm and uplifting
+- Energetic and exciting
+- Dramatic and powerful
+- Relaxed and mellow
+
+### Length
+- Approximately 2–3 minutes.
+- Approximately 3–4 minutes.
+- Approximately 4–5 minutes.
+
+## Step 5: Creative direction
+
+Ask:
+
+- What should the song feel like?
+- What message should it communicate?
+- Are there specific details that absolutely must be included?
+- Is there anything we should avoid?
+- Are there any additional creative instructions?
+
+Allow longer written responses.
+
+### Ultimate Gift photo uploads
+
+Only show this section for Ultimate Gift orders.
+
+Allow up to 10 photos.
+
+Include:
+- Upload controls.
+- Image previews.
+- Remove buttons.
+- Upload progress.
+- File validation.
+- Maximum file size.
+- Supported image formats.
+
+Store files securely.
+
+Do not make customer photos publicly accessible.
+
+## Step 6: Your Details
+
+Collect:
+
+- Full name.
+- Email address.
+- Optional phone number.
+
+If the customer is logged in, prefill their saved account details.
+
+Allow them to edit these details.
+
+## Step 7: Review
+
+Show the complete order summary.
+
+Include:
+- Package and price.
+- Occasion.
+- Recipient information.
+- Music preferences.
+- Creative direction.
+- Customer details.
+- Uploaded photos, if applicable.
+
+Allow customers to return to any previous step and make changes.
+
+Require confirmation that:
+- Their information is accurate.
+- They agree to the privacy policy and order terms.
+- They understand that payment has not been taken if payment processing is not configured.
+
+### Submission behaviour
+
+When the customer submits:
+
+1. Validate all required fields.
+2. Check that the selected package is valid.
+3. Upload any required photos securely.
+4. Save the order to the database.
+5. Generate a unique order reference.
+6. Set the initial status to New Order.
+7. Record the submission timestamp.
+8. Associate the order with the customer account.
+9. Make the order available in the admin dashboard.
+10. Display a confirmation page.
+
+Do not display a success message unless the database confirms that the order was saved.
+
+If something fails:
+- Show a useful error message.
+- Preserve the customer's form answers.
+- Prevent accidental duplicate submissions.
+- Allow the customer to retry safely.
+
+---
+
+# 8. CUSTOMER DASHBOARD
+
+Create a private customer dashboard.
+
+After login, customers should see:
+
+### Dashboard overview
+- Welcome message.
+- Active orders.
+- Recently completed orders.
+- Order status summaries.
+- Account details.
+
+### My Orders
+
+Display all orders belonging to the logged-in customer.
+
+Each order should show:
+- Order reference.
+- Recipient.
+- Package.
+- Submission date.
+- Current status.
+- Price.
+- Available actions.
+
+Allow customers to open an order.
+
+### Order detail page
+
+Show:
+- Full order information.
+- Current production status.
+- Progress timeline.
+- Customer-visible updates.
+- Shared lyrics.
+- Revision history.
+- Approval controls.
+- Available downloads.
+
+### Customer account
+
+Allow customers to:
+- Update their name.
+- Update their email where supported securely.
+- Change their password.
+- Update their phone number.
+- Review account details.
+
+Customers must never be able to view another customer's information.
+
+---
+
+# 9. PRIVATE ADMIN DASHBOARD
+
+Create a comprehensive admin dashboard at:
+
+/admin
+
+It must be fully protected by server-side authentication and role permissions.
+
+Do not expose administrator navigation or controls to ordinary customers.
+
+## Dashboard overview
+
+Display:
+
+- Total orders.
+- New orders.
+- Orders being reviewed.
+- Orders awaiting lyric approval.
+- Orders in production.
+- Orders ready for delivery.
+- Completed orders.
+- Cancelled orders.
+- Recorded revenue.
+- Recent activity.
+
+Revenue must only include payments confirmed by the payment provider.
+
+Do not count unpaid, failed, pending or unrecorded orders as paid revenue.
+
+## Admin navigation
+
+Create these sections:
+
+1. Overview
+2. Orders
+3. Customers
+4. Song Library
+5. Enquiries
+6. Analytics
+7. Notifications
+8. Settings
+9. Audit Log
+
+## Order management
+
+Create a proper searchable and filterable order management system.
+
+Display:
+- Order reference.
+- Customer.
+- Recipient.
+- Package.
+- Price.
+- Date submitted.
+- Order status.
+- Payment status.
+- Assigned creator.
+
+Allow administrators to:
+
+- Search orders.
+- Filter by status.
+- Filter by package.
+- Filter by date.
+- Sort orders.
+- Open order details.
+- Edit order information.
+- Assign a creator.
+- Add internal notes.
+- Add customer-visible messages.
+- Change order status.
+- Manage lyrics.
+- Manage revisions.
+- Upload files.
+- View the order's complete history.
+
+## Order statuses
+
+Use these exact statuses:
+
+1. New Order
+2. Reviewing Order
+3. Writing Lyrics
+4. Awaiting Customer Lyric Approval
+5. Lyrics Approved
+6. Song in Production
+7. Quality Check
+8. Ready for Delivery
+9. Delivered
+10. Completed
+11. On Hold
+12. Cancelled
+
+Record every status change with:
+- Previous status.
+- New status.
+- Timestamp.
+- Administrator responsible.
+
+Make the status timeline visible to administrators and display customer-visible statuses in the customer portal.
+
+## Internal and customer-visible notes
+
+Clearly distinguish:
+
+**Internal notes**
+- Only administrators can see them.
+- Never expose them to customers.
+
+**Customer-visible updates**
+- Visible in the customer's order tracking page.
+- May trigger email notifications if configured.
+
+Never accidentally expose internal notes.
+
+---
+
+# 10. LYRIC WRITING AND APPROVAL SYSTEM
+
+This is a critical feature.
+
+Build a complete lyric workflow.
+
+## Administrator lyric editor
+
+Administrators must be able to:
+
+- Write lyrics.
+- Edit lyrics.
+- Save drafts.
+- Create new versions.
+- Compare previous versions.
+- Share lyrics with the customer.
+- Request customer approval.
+- Review customer feedback.
+- Record revision rounds.
+
+Store every lyric version.
+
+Do not overwrite previous approved or submitted versions.
+
+## Customer lyric review
+
+When lyrics are shared, customers should receive a notification if email notifications are configured.
+
+Their dashboard must show:
+
+- The shared lyrics.
+- Version number.
+- Date shared.
+- Approval status.
+
+Customers must be able to:
+
+**Approve lyrics**
+
+Record:
+- Approval timestamp.
+- Customer account.
+- Approved version.
+
+**Request changes**
+
+Allow the customer to provide written feedback.
+
+Record:
+- Feedback.
+- Submission timestamp.
+- Version being reviewed.
+- Revision round.
+
+## Revision limits
+
+Respect the package purchased:
+
+- Personal Song: 1 round.
+- Signature Song: 2 rounds.
+- Ultimate Gift: 2 rounds.
+
+Display remaining revisions.
+
+Do not silently allow unlimited revisions.
+
+## Production restrictions
+
+Final song production must not begin until lyrics are approved.
+
+The system must enforce this rule in the backend, not just visually.
+
+---
+
+# 11. FILE MANAGEMENT AND DIGITAL DELIVERY
+
+Create a complete file management system.
+
+Administrators must be able to upload:
+
+- MP3 audio.
+- WAV audio.
+- Lyrics PDFs.
+- Printable lyrics sheets.
+- Cover artwork.
+- Photo lyric videos.
+- Digital gift cards.
+
+Support multiple files per order.
+
+Support multiple versions where necessary.
+
+For every uploaded file, record:
+
+- File name.
+- File type.
+- Upload date.
+- Version.
+- Associated order.
+- Internal or customer-visible visibility.
+- Administrator who uploaded it.
+
+## File visibility
+
+Internal files must never be accessible to customers.
+
+Customer-visible files must only become available when the order is marked Ready for Delivery or Delivered.
+
+Use secure storage and authenticated or time-limited download links.
+
+Validate:
+- File types.
+- File sizes.
+- Upload permissions.
+- File ownership.
+
+Do not expose permanent public URLs for private customer uploads.
+
+## Delivery page
+
+Customers should see a beautiful delivery experience.
+
+Include:
+- Finished song.
+- Audio player.
+- Download button.
+- Lyrics PDF.
+- Cover artwork.
+- Lyric video, if included.
+- Gift card, if included.
+- QR code, if included.
+- Private digital gift page, if included.
+
+Only show deliverables that actually exist.
+
+Do not create fake download buttons.
+
+---
+
+# 12. SONG LIBRARY
+
+Create an administrator-managed song library.
+
+Allow administrators to:
+- Add completed songs.
+- Associate songs with orders.
+- Store song titles.
+- Add genre and mood information.
+- Store cover artwork.
+- Upload audio files.
+- Mark songs as approved for public listening.
+- Mark songs as private.
+
+The public Listen page must only display songs explicitly approved for public display.
+
+Respect customer privacy and never publish private songs automatically.
+
+---
+
+# 13. CUSTOMER ENQUIRIES
+
+Create a Contact page with a working contact form.
+
+Collect:
+- Name.
+- Email.
+- Subject.
+- Message.
+
+Store enquiries in the database.
+
+Create an admin Enquiries section where administrators can:
+- View enquiries.
+- Search enquiries.
+- Mark them as read.
+- Mark them as resolved.
+- Add internal notes.
+
+Display:
+
+hello@madeforyoumusic.co.nz
+
+Aotearoa New Zealand
+
+Do not invent a phone number or physical business address.
+
+---
+
+# 14. PAYMENT SYSTEM
+
+Prepare the application for secure online payments.
+
+The business uses one-time payments in NZD.
+
+Design the system so that Stripe or another supported payment provider can be integrated.
+
+Payment functionality must include:
+- Order amount.
+- Currency.
+- Payment status.
+- Transaction reference.
+- Payment timestamp.
+- Refund status where supported.
+
+Possible payment statuses:
+
+- Not Recorded
+- Pending
+- Paid
+- Failed
+- Refunded
+- Partially Refunded
+
+Important:
+
+Do not simulate successful payments.
+
+Do not mark an order as Paid unless the payment provider confirms the transaction.
+
+If no payment provider is configured:
+- Keep payment status as Not Recorded.
+- Display that no payment has been taken.
+- Allow administrators to test the order workflow without collecting money.
+
+Never store card numbers or CVV information.
+
+Any real payment integration must be configured securely and supervised by the business owner.
+
+---
+
+# 15. NOTIFICATIONS
+
+Create an in-app notification system.
+
+Notify customers when:
+- An order is submitted.
+- Their order status changes.
+- Lyrics are ready for review.
+- Revisions are requested.
+- Lyrics are approved.
+- Their song is ready.
+- Deliverables become available.
+
+Administrators should receive notifications for:
+- New orders.
+- New enquiries.
+- Customer revision requests.
+- Customer lyric approvals.
+- Important order changes.
+
+Create email notification templates.
+
+Use a properly configured email service.
+
+If no email service is connected, notifications must still work inside the application.
+
+Do not claim emails have been sent when no email provider is configured.
+
+---
+
+# 16. ANALYTICS AND BUSINESS REPORTING
+
+Create an admin analytics page.
+
+Display:
+
+- Total orders.
+- Orders by package.
+- Orders by occasion.
+- Orders by genre.
+- Orders by status.
+- Completed orders.
+- Cancellation count.
+- Average order value.
+- Confirmed revenue.
+- Monthly order trends.
+
+Use real database records.
+
+Do not populate analytics with invented data.
+
+Include useful date filters.
+
+Distinguish between:
+- Total order value.
+- Confirmed paid revenue.
+- Unpaid orders.
+- Refunded orders.
+
+---
+
+# 17. ADMIN SETTINGS
+
+Create a settings section.
+
+Allow administrators to manage:
+
+### Business settings
+- Business display name.
+- Contact email.
+- Website information.
+- Brand colours.
+- Logo assets.
+
+### Package settings
+- Package descriptions.
+- Prices.
+- Package availability.
+- Package inclusions.
+
+### Production settings
+- Default statuses.
+- Estimated turnaround text.
+- Revision policies.
+
+### Notification settings
+- Email notification preferences.
+- In-app notification preferences.
+
+### Administrator settings
+- Administrator accounts.
+- Roles.
+- Access permissions.
+
+Protect sensitive settings.
+
+Record important changes in the audit log.
+
+Do not allow an ordinary customer to access these settings.
+
+---
+
+# 18. SECURITY AND PRIVACY
+
+Security is not optional.
+
+Implement:
+
+- Server-side authentication.
+- Role-based access control.
+- Database row-level security.
+- Protected API routes.
+- Input validation.
+- Output sanitisation.
+- Secure file uploads.
+- Private file storage.
+- Secure session handling.
+- Rate limiting where supported.
+- Protection against unauthorised data access.
+- Appropriate error handling.
+
+Customers must only access their own:
+- Orders.
+- Uploaded photos.
+- Lyrics.
+- Feedback.
+- Deliverables.
+- Account information.
+
+Administrators must have authorised access to business records.
+
+Internal notes must never be customer-visible.
+
+Do not put secrets in frontend code.
+
+Do not expose database credentials.
+
+Create appropriate privacy and terms pages.
+
+The privacy page should explain:
+- What information is collected.
+- Why information is collected.
+- How customer photos and stories are used.
+- How files are stored.
+- How customers can request assistance with their information.
+
+Do not invent legal certifications or claim compliance that has not been verified.
+
+---
+
+# 19. DESIGN AND USER EXPERIENCE
+
+The entire application should feel like one coherent product.
+
+Use a polished modern interface with:
+- Colourful section backgrounds.
+- Attractive typography.
+- Rounded cards.
+- Soft shadows.
+- Thoughtful spacing.
+- Clear buttons.
+- Subtle animations.
+- Beautiful empty states.
+- Clear form validation.
+- Helpful success and error messages.
+
+Avoid:
+- Generic AI-generated layouts.
+- Excessive gradients.
+- Cluttered dashboards.
+- Tiny text.
+- Inconsistent button styles.
+- Fake statistics.
+- Placeholder functionality.
+- Broken navigation.
+
+## Responsive design
+
+The application must work properly on:
+
+- Desktop.
+- Laptop.
+- Tablet.
+- Mobile phones.
+
+Pay particular attention to:
+- Ordering forms.
+- Customer dashboard.
+- Admin dashboard.
+- File uploads.
+- Navigation.
+- Tables and order lists.
+
+On mobile, convert large tables into readable cards or responsive layouts.
+
+## Accessibility
+
+Include:
+- Keyboard navigation.
+- Visible focus indicators.
+- Proper labels.
+- Accessible form errors.
+- Sufficient colour contrast.
+- Descriptive button text.
+
+---
+
+# 20. DATABASE DESIGN
+
+Create a proper relational database.
+
+At minimum, implement these entities:
+
+### Users
+- ID.
+- Name.
+- Email.
+- Role.
+- Phone.
+- Created date.
+
+### Orders
+- ID.
+- Unique order reference.
+- Customer ID.
+- Package ID.
+- Occasion.
+- Recipient name.
+- Relationship.
+- Nickname.
+- Personality.
+- Interests.
+- Memories.
+- Funny stories.
+- Inside jokes.
+- Special phrases.
+- Excluded details.
+- Genre.
+- Mood.
+- Vocal preference.
+- Energy.
+- Length.
+- Creative direction.
+- Order status.
+- Payment status.
+- Price.
+- Assigned creator.
+- Submission date.
+- Updated date.
+
+### Packages
+- ID.
+- Name.
+- Description.
+- Price.
+- Inclusions.
+- Active status.
+
+### Lyrics
+- ID.
+- Order ID.
+- Version.
+- Content.
+- Status.
+- Created by.
+- Created date.
+- Shared date.
+- Approval date.
+
+### Revisions
+- ID.
+- Order ID.
+- Lyric version.
+- Customer feedback.
+- Revision number.
+- Created date.
+
+### Order status history
+- ID.
+- Order ID.
+- Previous status.
+- New status.
+- Changed by.
+- Timestamp.
+
+### Files
+- ID.
+- Order ID.
+- File name.
+- Storage path.
+- File type.
+- Version.
+- Visibility.
+- Uploaded by.
+- Created date.
+
+### Messages
+- ID.
+- Order ID.
+- Sender.
+- Message.
+- Visibility.
+- Timestamp.
+
+### Payments
+- ID.
+- Order ID.
+- Amount.
+- Currency.
+- Provider.
+- Transaction reference.
+- Payment status.
+- Timestamp.
+
+### Notifications
+- ID.
+- User ID.
+- Type.
+- Message.
+- Read status.
+- Timestamp.
+
+### Enquiries
+- ID.
+- Name.
+- Email.
+- Subject.
+- Message.
+- Status.
+- Timestamp.
+
+### Audit log
+- ID.
+- Administrator ID.
+- Action.
+- Affected record.
+- Timestamp.
+
+Create proper relationships, constraints and indexes.
+
+Use database migrations or equivalent schema management.
+
+---
+
+# 21. REQUIRED END-TO-END TESTING
+
+Do not declare the application complete until you have tested the actual workflows.
+
+Create a test customer and test administrator.
+
+Run the following tests:
+
+### Customer registration
+1. Register a customer.
+2. Log in.
+3. Log out.
+4. Log back in.
+5. Reset the password.
+
+### Ordering
+1. Select The Personal Song.
+2. Complete the order form.
+3. Submit an order.
+4. Confirm it is saved in the database.
+5. Confirm a unique order reference is generated.
+6. Confirm it appears in the admin dashboard.
+7. Refresh the page and verify the order remains.
+
+Repeat for all three packages.
+
+### Administration
+1. Log in as an administrator.
+2. Open the order.
+3. Edit its information.
+4. Add an internal note.
+5. Add a customer-visible update.
+6. Change its status.
+7. Confirm the status history is recorded.
+
+### Lyrics
+1. Write a lyric draft.
+2. Save it.
+3. Share it with the customer.
+4. Log in as the customer.
+5. View the lyrics.
+6. Request a revision.
+7. Check the revision appears in the admin dashboard.
+8. Create a revised version.
+9. Approve the lyrics as the customer.
+10. Confirm approval is recorded.
+
+### Production and delivery
+1. Confirm production cannot begin before approval.
+2. Mark lyrics approved.
+3. Move the order into production.
+4. Upload a test MP3.
+5. Upload a lyrics PDF.
+6. Mark files customer-visible.
+7. Mark the order Ready for Delivery.
+8. Log in as the customer.
+9. Download the available files.
+
+### Security
+1. Attempt to access another customer's order.
+2. Confirm access is denied.
+3. Attempt to access internal notes as a customer.
+4. Confirm access is denied.
+5. Attempt to access the admin dashboard as a customer.
+6. Confirm access is denied.
+7. Verify private uploaded photos are not publicly accessible.
+
+### Mobile testing
+Test the complete ordering process on a mobile-sized viewport.
+
+Fix any discovered problems.
+
+---
+
+# 22. DEVELOPMENT RULES
+
+Follow these instructions throughout development:
+
+1. Build the complete application, not just its homepage.
+2. Prioritise working functionality over decorative elements.
+3. Use reusable components.
+4. Keep code organised and maintainable.
+5. Use real persistent database operations.
+6. Implement real authentication.
+7. Enforce security on the backend.
+8. Never use fake success messages.
+9. Never silently skip difficult requirements.
+10. Never invent customer information.
+11. Never invent payment confirmations.
+12. Never expose private customer data.
+13. Never claim an integration works unless it has been configured and tested.
+14. Preserve the official branding.
+15. Keep the project exportable.
+
+If a feature cannot be implemented because an external service or credential is required, build the appropriate integration structure and clearly identify what remains to be configured.
+
+Do not replace a required backend feature with a decorative frontend mockup.
+
+---
+
+# 23. FINAL DELIVERABLE
+
+When finished, provide:
+
+1. The complete working application.
+2. All source code.
+3. Database schema and migrations.
+4. Authentication configuration.
+5. Environment variable template.
+6. Deployment instructions.
+7. Administrator setup instructions.
+8. Customer usage instructions.
+9. List of implemented features.
+10. List of incomplete features.
+11. List of external integrations required.
+12. Results of the end-to-end tests.
+
+Clearly distinguish between implemented, tested, partially implemented and unimplemented functionality.
+
+## FINAL PRIORITY
+
+Build M4UM as a genuine, usable online business platform.
+
+The result must not be a static website.
+
+A visitor must be able to register, place an order, receive an order reference, log in, track their order, review lyrics, request revisions, approve lyrics and download their completed song.
+
+An administrator must be able to log in, manage customers, manage orders, write lyrics, handle revisions, update statuses, upload deliverables and oversee the business.
+
+**Build the entire M4UM application. Do not stop after generating the homepage.**
