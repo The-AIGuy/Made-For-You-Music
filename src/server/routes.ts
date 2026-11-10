@@ -18,6 +18,9 @@ import {
   insertAccount,
   updateAccount,
   hasAdminAccount,
+  createPasswordReset,
+  verifyPasswordReset,
+  revokeAllSessions,
   type AuthRequest,
 } from './auth.js';
 import type {
@@ -56,6 +59,8 @@ function limitAuthAttempts(req: import('express').Request, res: import('express'
 apiRouter.use('/auth/register', limitAuthAttempts);
 apiRouter.use('/auth/login', limitAuthAttempts);
 apiRouter.use('/auth/setup-admin', limitAuthAttempts);
+apiRouter.use('/auth/reset-password-request', limitAuthAttempts);
+apiRouter.use('/auth/reset-password', limitAuthAttempts);
 
 apiRouter.get('/order-readiness', async (_req, res) => {
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -169,8 +174,52 @@ apiRouter.post('/auth/login', async (req, res) => {
   }
 });
 
-apiRouter.post('/auth/google', (_req, res) => {
-  return res.status(503).json({ error: 'Google sign-in is temporarily disabled until server-side identity-token verification is implemented.' });
+apiRouter.post('/auth/google', async (req, res) => {
+  const idToken = typeof req.body.idToken === 'string' ? req.body.idToken : '';
+  const apiKey = process.env.FIREBASE_WEB_API_KEY;
+  if (!idToken || !apiKey) return res.status(503).json({ error: 'Google sign-in is not configured.' });
+
+  try {
+    const verifyResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(apiKey)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    });
+    if (!verifyResponse.ok) return res.status(401).json({ error: 'Google sign-in could not be verified. Please try again.' });
+    const verified = await verifyResponse.json() as {
+      users?: Array<{ localId: string; email?: string; emailVerified?: boolean; displayName?: string; providerUserInfo?: Array<{ providerId?: string }> }>;
+    };
+    const identity = verified.users?.[0];
+    const email = identity?.email?.toLowerCase().trim();
+    const isGoogleAccount = identity?.providerUserInfo?.some((provider) => provider.providerId === 'google.com');
+    if (!identity?.localId || !email || identity.emailVerified !== true || !isGoogleAccount) {
+      return res.status(401).json({ error: 'Use a Google account with a verified email address.' });
+    }
+
+    let user = await findAccountByEmail(email);
+    if (!user) {
+      const generatedPassword = crypto.randomBytes(48).toString('base64url');
+      const { hash, salt } = hashPassword(generatedPassword);
+      user = {
+        id: `user_${crypto.randomUUID()}`,
+        name: (identity.displayName || email.split('@')[0]).slice(0, 100),
+        email,
+        role: 'customer',
+        passwordHash: hash,
+        salt,
+        createdAt: new Date().toISOString(),
+      };
+      await insertAccount(user);
+    }
+    const token = await createSession(user.id);
+    return res.json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, createdAt: user.createdAt },
+    });
+  } catch (error) {
+    console.error('[M4UM] Verified Google sign-in failed:', error);
+    return res.status(503).json({ error: 'Google sign-in is temporarily unavailable. Please try again.' });
+  }
 });
 
 apiRouter.post('/auth/logout', requireAuth, async (req: AuthRequest, res) => {
@@ -238,12 +287,69 @@ apiRouter.post('/auth/change-password', requireAuth, async (req: AuthRequest, re
   return res.json({ message: 'Password updated successfully.' });
 });
 
-apiRouter.post('/auth/reset-password-request', (_req, res) => {
-  return res.status(503).json({ error: 'Password reset is temporarily unavailable until secure email delivery is configured.' });
+async function sendPasswordResetEmail(to: string, code: string): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.EMAIL_FROM;
+  if (!apiKey || !from) throw new Error('Password reset email delivery is not configured.');
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject: 'Your Made For You Music password reset code',
+      text: `Your password reset code is ${code}. It expires in 15 minutes. If you did not request this, you can ignore this email.`,
+      html: `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#241536"><h1 style="color:#421078">Reset your password</h1><p>Use this one-time code to reset your Made For You Music account password:</p><p style="font-size:30px;font-weight:bold;letter-spacing:8px;color:#421078">${code}</p><p>This code expires in 15 minutes and can only be used once.</p><p>If you did not request this, you can safely ignore this email.</p></div>`,
+    }),
+  });
+  if (!response.ok) {
+    const detail = (await response.text()).slice(0, 300);
+    console.error('[M4UM] Password reset email delivery failed:', response.status, detail);
+    throw new Error('Password reset email could not be sent.');
+  }
+}
+
+apiRouter.post('/auth/reset-password-request', async (req, res) => {
+  const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 254) {
+    return res.status(400).json({ error: 'Enter a valid email address.' });
+  }
+  try {
+    const user = await findAccountByEmail(email);
+    if (user) {
+      const code = String(crypto.randomInt(0, 100000000)).padStart(8, '0');
+      await createPasswordReset(user.id, code);
+      await sendPasswordResetEmail(email, code);
+    }
+    return res.json({ message: 'If an account exists for that email, a password reset code has been sent. Check your inbox and spam folder.' });
+  } catch (error) {
+    console.error('[M4UM] Password reset request failed:', error);
+    return res.status(503).json({ error: 'Password reset email could not be sent right now. Please try again later.' });
+  }
 });
 
-apiRouter.post('/auth/reset-password', (_req, res) => {
-  return res.status(503).json({ error: 'Password reset is temporarily unavailable until secure email delivery is configured.' });
+apiRouter.post('/auth/reset-password', async (req, res) => {
+  const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
+  const code = typeof req.body.token === 'string' ? req.body.token.trim() : '';
+  const newPassword = typeof req.body.newPassword === 'string' ? req.body.newPassword : '';
+  if (!email || !/^\\d{8}$/.test(code) || newPassword.length < 12) {
+    return res.status(400).json({ error: 'Enter the 8-digit code and a password of at least 12 characters.' });
+  }
+  try {
+    const user = await findAccountByEmail(email);
+    if (!user || !(await verifyPasswordReset(user.id, code))) {
+      return res.status(400).json({ error: 'That reset code is invalid, expired, or already used. Request a new code and try again.' });
+    }
+    const { hash, salt } = hashPassword(newPassword);
+    user.passwordHash = hash;
+    user.salt = salt;
+    await updateAccount(user);
+    await revokeAllSessions(user.id);
+    return res.json({ message: 'Your password has been updated. Please sign in with your new password.' });
+  } catch (error) {
+    console.error('[M4UM] Password reset failed:', error);
+    return res.status(503).json({ error: 'Password reset is temporarily unavailable. Please try again later.' });
+  }
 });
 
 // Secure Administrator Setup endpoint (Requires authorized setup secret key)
