@@ -345,28 +345,9 @@ apiRouter.post('/orders', optionalAuth, (req: AuthRequest, res) => {
     return res.status(400).json({ error: 'The selected package is invalid.' });
   }
 
-  // Find or create customer account
-  let customerId = req.user?.id;
-  if (!customerId) {
-    let existingUser = db.users.find((u) => u.email.toLowerCase() === customerEmail.toLowerCase().trim());
-    if (!existingUser) {
-      // Auto-register customer with default password and notify
-      const tempPass = 'M4umGuest2026!';
-      const { hash, salt } = hashPassword(tempPass);
-      existingUser = {
-        id: `user_cust_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        name: customerName.trim(),
-        email: customerEmail.toLowerCase().trim(),
-        role: 'customer',
-        phone: customerPhone?.trim(),
-        passwordHash: hash,
-        salt,
-        createdAt: new Date().toISOString(),
-      };
-      db.users.push(existingUser);
-    }
-    customerId = existingUser.id;
-  }
+  // Public checkout must never create an account with a shared/default password.
+  // Guest orders are stored independently and can be claimed only after verified authentication.
+  const customerId = req.user?.id || 'guest';
 
   // Generate unique order reference M4UM-2026-XXXX
   const randomNum = Math.floor(1000 + Math.random() * 9000);
@@ -411,6 +392,40 @@ apiRouter.post('/orders', optionalAuth, (req: AuthRequest, res) => {
     updatedAt: now,
   };
 
+  // Persist customer orders directly to the private Supabase table. The secret key
+  // is server-only; RLS denies direct access from browser clients.
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+  if (!supabaseUrl || !supabaseSecretKey) {
+    return res.status(503).json({ error: 'Secure order storage is not configured yet. Please try again later.' });
+  }
+
+  try {
+    const supabaseResponse = await fetch(`${supabaseUrl.replace(/\\/$/, '')}/rest/v1/m4um_orders`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseSecretKey,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        reference: newOrder.reference,
+        customer_email: newOrder.customerEmail,
+        order_data: newOrder,
+      }),
+    });
+
+    if (!supabaseResponse.ok) {
+      const responseText = await supabaseResponse.text();
+      console.error('[M4UM] Supabase order insert failed:', supabaseResponse.status, responseText.slice(0, 500));
+      return res.status(503).json({ error: 'We could not securely save your order. No payment has been taken. Please try again later.' });
+    }
+  } catch (error) {
+    console.error('[M4UM] Supabase order storage unavailable:', error);
+    return res.status(503).json({ error: 'Order storage is temporarily unavailable. No payment has been taken.' });
+  }
+
+  // Keep in-memory state only for this running instance. Supabase is the source of truth.
   db.orders.unshift(newOrder);
 
   // Record initial status history
@@ -447,11 +462,10 @@ apiRouter.post('/orders', optionalAuth, (req: AuthRequest, res) => {
       );
     });
 
-  dbManager.persist();
-
+  // Order data has already been durably saved to Supabase above.
   return res.status(201).json({
     order: newOrder,
-    message: 'Order created successfully.',
+    message: 'Your order request has been received. Payment has not been taken; we will contact you with next steps.',
   });
 });
 
