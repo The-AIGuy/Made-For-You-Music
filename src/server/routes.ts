@@ -144,57 +144,8 @@ apiRouter.post('/auth/login', (req, res) => {
   });
 });
 
-apiRouter.post('/auth/google', async (req, res) => {
-  const { email, name, googleUid } = req.body;
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required from Google sign-in.' });
-  }
-
-  let user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
-
-  if (!user) {
-    // Create new customer account for verified Google user
-    const id = `user_goog_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    const randomPass = Math.random().toString(36) + Date.now().toString(36);
-    const { hash, salt } = hashPassword(randomPass);
-
-    user = {
-      id,
-      name: name?.trim() || email.split('@')[0],
-      email: email.toLowerCase().trim(),
-      passwordHash: hash,
-      salt,
-      role: 'customer',
-      createdAt: new Date().toISOString(),
-    };
-
-    db.users.push(user);
-    dbManager.persist();
-
-    // Audit log
-    db.auditLogs.unshift({
-      id: `audit_${Date.now()}`,
-      adminId: user.id,
-      adminName: user.name,
-      action: 'CUSTOMER_GOOGLE_REGISTER',
-      details: `Customer account registered via Google Authentication for ${user.email}`,
-      createdAt: new Date().toISOString(),
-    });
-    dbManager.persist();
-  }
-
-  const token = createSession(user.id);
-  return res.json({
-    token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      phone: user.phone,
-      createdAt: user.createdAt,
-    },
-  });
+apiRouter.post('/auth/google', (_req, res) => {
+  return res.status(503).json({ error: 'Google sign-in is temporarily disabled until server-side identity-token verification is implemented.' });
 });
 
 apiRouter.post('/auth/logout', requireAuth, (req: AuthRequest, res) => {
@@ -262,72 +213,21 @@ apiRouter.post('/auth/change-password', requireAuth, (req: AuthRequest, res) => 
   return res.json({ message: 'Password updated successfully.' });
 });
 
-apiRouter.post('/auth/reset-password-request', (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: 'Email is required.' });
-
-  const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
-  if (user) {
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    user.resetToken = code;
-    user.resetExpires = Date.now() + 60 * 60 * 1000; // 1 hour
-    dbManager.persist();
-
-    sendNotification(
-      user.id,
-      'system',
-      'Password Reset Code',
-      `Your password reset verification code is: ${code}. Valid for 1 hour.`
-    );
-
-    return res.json({
-      message: 'Password reset code has been sent. Please enter your code to choose a new password.',
-      resetCode: code, // returned for verification in test environment
-    });
-  }
-
-  return res.json({
-    message: 'If an account with that email exists, password reset instructions have been generated.',
-  });
+apiRouter.post('/auth/reset-password-request', (_req, res) => {
+  return res.status(503).json({ error: 'Password reset is temporarily unavailable until secure email delivery is configured.' });
 });
 
-apiRouter.post('/auth/reset-password', (req, res) => {
-  const { email, code, newPassword } = req.body;
-  if (!email || !code || !newPassword) {
-    return res.status(400).json({ error: 'Email, verification code, and new password are required.' });
-  }
-
-  if (newPassword.length < 8) {
-    return res.status(400).json({ error: 'Password must be at least 8 characters long.' });
-  }
-
-  const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
-  if (!user || user.resetToken !== code.trim()) {
-    return res.status(400).json({ error: 'Invalid or expired password reset code.' });
-  }
-
-  if (!user.resetExpires || Date.now() > user.resetExpires) {
-    return res.status(400).json({ error: 'Password reset code has expired. Please request a new one.' });
-  }
-
-  const { hash, salt } = hashPassword(newPassword);
-  user.passwordHash = hash;
-  user.salt = salt;
-  user.resetToken = undefined;
-  user.resetExpires = undefined;
-  dbManager.persist();
-
-  sendNotification(user.id, 'system', 'Password Updated', 'Your account password was successfully reset.');
-  return res.json({ message: 'Password has been reset successfully. You can now log in.' });
+apiRouter.post('/auth/reset-password', (_req, res) => {
+  return res.status(503).json({ error: 'Password reset is temporarily unavailable until secure email delivery is configured.' });
 });
 
 // Secure Administrator Setup endpoint (Requires authorized setup secret key)
 apiRouter.post('/auth/setup-admin', (req, res) => {
   const { secretKey, setupKey, email, password, name } = req.body;
   const key = setupKey || secretKey;
-  const REQUIRED_SECRET = process.env.ADMIN_SETUP_KEY || 'M4UM-Admin-Setup-2026';
+  const REQUIRED_SECRET = process.env.ADMIN_SETUP_KEY;
 
-  if (!key || key !== REQUIRED_SECRET) {
+  if (!REQUIRED_SECRET || !key || key !== REQUIRED_SECRET) {
     return res.status(403).json({ error: 'Invalid administrator setup secret key.' });
   }
 
@@ -1426,8 +1326,10 @@ apiRouter.post('/team-members', requireAdmin, (req: AuthRequest, res) => {
   }
 
   // Create new team member
-  const initialPassword = password || 'M4UMProducer2026!';
-  const { hash, salt } = hashPassword(initialPassword);
+  if (typeof password !== 'string' || password.length < 12) {
+    return res.status(400).json({ error: 'A unique password of at least 12 characters is required.' });
+  }
+  const { hash, salt } = hashPassword(password);
 
   const newMember = {
     id: `user_team_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -1460,6 +1362,6 @@ apiRouter.post('/team-members', requireAdmin, (req: AuthRequest, res) => {
       phone: newMember.phone,
       createdAt: newMember.createdAt,
     },
-    defaultPasswordNotice: password ? undefined : 'Default initial password assigned: M4UMProducer2026!',
+
   });
 });
