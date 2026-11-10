@@ -547,10 +547,26 @@ apiRouter.get('/orders', requireAuth, async (req: AuthRequest, res) => {
   return res.json({ orders });
 });
 
-apiRouter.get('/orders/:id', requireAuth, (req: AuthRequest, res) => {
+apiRouter.get('/orders/:id', requireAuth, async (req: AuthRequest, res) => {
   const { id } = req.params;
   const user = req.user!;
-  const order = db.orders.find((o) => o.id === id);
+  let order = db.orders.find((o) => o.id === id);
+  if (!order && user.role === 'admin') {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+    if (!supabaseUrl || !supabaseSecretKey) return res.status(503).json({ error: 'Secure order storage is not configured.' });
+    try {
+      const baseUrl = supabaseUrl.endsWith('/') ? supabaseUrl.slice(0, -1) : supabaseUrl;
+      const query = new URLSearchParams({ select: 'order_data', 'order_data->>id': `eq.${id}`, limit: '1' });
+      const response = await fetch(`${baseUrl}/rest/v1/m4um_orders?${query.toString()}`, { headers: { apikey: supabaseSecretKey } });
+      if (!response.ok) return res.status(503).json({ error: 'Could not load this secure order.' });
+      const rows = await response.json() as Array<{ order_data?: Order }>;
+      order = rows[0]?.order_data;
+    } catch (error) {
+      console.error('[M4UM] Admin order detail read failed:', error);
+      return res.status(503).json({ error: 'Could not load this secure order.' });
+    }
+  }
 
   if (!order) {
     return res.status(404).json({ error: 'Order not found.' });
