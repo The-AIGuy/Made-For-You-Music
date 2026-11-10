@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getAccessToken } from './firebase.js';
+import { getGmailAccessToken } from './firebase.js';
 import { api } from './api.js';
 
 /**
@@ -73,9 +73,9 @@ export async function sendGmailEmail({
   type: string;
   orderReference?: string;
 }): Promise<{ success: boolean; messageId?: string }> {
-  const token = await getAccessToken();
+  const token = await getGmailAccessToken();
   if (!token) {
-    throw new Error('Gmail is not connected. Please sign in with your Google account.');
+    throw new Error('Gmail integration is not connected. Please connect Gmail in the dashboard to dispatch emails.');
   }
 
   const rawMessage = buildMimeMessage({ to, subject, htmlBody });
@@ -130,7 +130,7 @@ export function createOrderConfirmationHtml(orderRef: string, recipientName: str
         <p style="font-size: 15px; line-height: 1.6;"><strong>Next step:</strong> Our songwriters will craft original personalised lyrics based on your story. We will notify you when lyrics are ready for your review and approval before any audio production begins.</p>
         
         <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; text-align: center;">
-          <p style="margin: 0;">Made For You Music · Aotearoa New Zealand · hello@madeforyoumusic.co.nz</p>
+          <p style="margin: 0;">Made For You Music · Featherston, Aotearoa New Zealand · dannaix.homes@tekura.org.nz · 0211873347</p>
           <p style="margin: 4px 0 0 0;">© 2026 TMG Enterprises, LLC. All rights reserved.</p>
         </div>
       </div>

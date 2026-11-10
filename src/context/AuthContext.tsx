@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { User, Notification } from '../types.js';
 import { api, getStoredToken, setStoredToken, removeStoredToken } from '../lib/api.js';
-import { googleSignIn, googleLogout, initAuth } from '../lib/firebase.js';
+import { googleSignIn, googleLogout, initAuth, authorizeGmailSender, getGmailAccessToken } from '../lib/firebase.js';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 interface AuthContextType {
@@ -15,14 +15,14 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (payload: { name: string; email: string; password: string; phone?: string }) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (updated: Partial<User>) => void;
-  // Google Workspace / Gmail connection
+  // Optional Gmail Sender integration
   googleUser: FirebaseUser | null;
-  googleToken: string | null;
-  isGoogleConnected: boolean;
-  connectGoogle: () => Promise<string>;
-  disconnectGoogle: () => Promise<void>;
+  isGmailConnected: boolean;
+  connectGmail: () => Promise<string>;
+  disconnectGmail: () => Promise<void>;
   // In-app notifications
   notifications: Notification[];
   unreadCount: number;
@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(getStoredToken());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [googleUser, setGoogleUser] = useState<FirebaseUser | null>(null);
-  const [googleToken, setGoogleToken] = useState<string | null>(null);
+  const [isGmailConnected, setIsGmailConnected] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Load current app user profile
@@ -87,16 +87,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user, fetchNotifications]);
 
-  // Listen to Firebase Google Auth state
+  // Listen to Firebase Auth state
   useEffect(() => {
     const unsubscribe = initAuth(
-      (fUser, aToken) => {
+      (fUser) => {
         setGoogleUser(fUser);
-        setGoogleToken(aToken);
       },
       () => {
         setGoogleUser(null);
-        setGoogleToken(null);
+        setIsGmailConnected(false);
       }
     );
     return () => unsubscribe();
@@ -118,15 +117,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await fetchNotifications();
   };
 
+  /**
+   * Standard Google Sign-In: Requests only openid, email, and profile.
+   * Authenticates the user in Firebase, then creates/loads their customer account.
+   */
+  const signInWithGoogle = async () => {
+    const fUser = await googleSignIn();
+    if (!fUser || !fUser.email) {
+      throw new Error('Google Sign-In did not return a verified email.');
+    }
+
+    const res = await api.googleAuth({
+      email: fUser.email,
+      name: fUser.displayName || undefined,
+      googleUid: fUser.uid,
+    });
+
+    setStoredToken(res.token);
+    setToken(res.token);
+    setUser(res.user);
+    setGoogleUser(fUser);
+    await fetchNotifications();
+  };
+
   const logout = async () => {
     try {
       await api.logout();
     } catch {
       // ignore
     }
+    await googleLogout();
     removeStoredToken();
     setToken(null);
     setUser(null);
+    setGoogleUser(null);
+    setIsGmailConnected(false);
     setNotifications([]);
   };
 
@@ -136,20 +161,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const connectGoogle = async (): Promise<string> => {
-    const result = await googleSignIn();
-    if (result) {
+  /**
+   * Optional Gmail integration: Specifically prompts for gmail.send scope.
+   */
+  const connectGmail = async (): Promise<string> => {
+    const result = await authorizeGmailSender();
+    if (result && result.accessToken) {
       setGoogleUser(result.user);
-      setGoogleToken(result.accessToken);
+      setIsGmailConnected(true);
       return result.accessToken;
     }
-    throw new Error('Google sign-in did not complete.');
+    throw new Error('Gmail authorization was not granted.');
   };
 
-  const disconnectGoogle = async () => {
-    await googleLogout();
-    setGoogleUser(null);
-    setGoogleToken(null);
+  const disconnectGmail = async () => {
+    setIsGmailConnected(false);
   };
 
   const markAsRead = async (id: string) => {
@@ -180,13 +206,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         register,
+        signInWithGoogle,
         logout,
         updateUser,
         googleUser,
-        googleToken,
-        isGoogleConnected: Boolean(googleToken),
-        connectGoogle,
-        disconnectGoogle,
+        isGmailConnected,
+        connectGmail,
+        disconnectGmail,
         notifications,
         unreadCount,
         fetchNotifications,

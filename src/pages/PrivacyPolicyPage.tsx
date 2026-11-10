@@ -69,7 +69,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = () => {
         <section className="space-y-3">
           <h2 className="font-heading text-xl font-bold text-[#421078]">5. Your Rights and Assistance</h2>
           <p>
-            You may request an update, copy, or deletion of your stored information at any time by contacting our privacy team at <strong>hello@madeforyoumusic.co.nz</strong>.
+            You may request an update, copy, or deletion of your stored information at any time by contacting our team at <strong>dannaix.homes@tekura.org.nz</strong> or calling <strong>0211873347</strong> (Featherston, New Zealand).
           </p>
         </section>
       </div>

@@ -10,6 +10,7 @@ import { sendGmailEmail } from '../lib/gmail.js';
 import {
   Mail,
   MapPin,
+  Phone,
   Send,
   CheckCircle2,
   AlertCircle,
@@ -22,7 +23,7 @@ interface ContactPageProps {
 }
 
 export const ContactPage: React.FC<ContactPageProps> = ({ navigate }) => {
-  const { user, isGoogleConnected, connectGoogle } = useAuth();
+  const { user, isGmailConnected, connectGmail } = useAuth();
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [subject, setSubject] = useState('');
@@ -69,13 +70,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({ navigate }) => {
     setSuccess(null);
 
     try {
-      if (!isGoogleConnected) {
-        await connectGoogle();
+      if (!isGmailConnected) {
+        await connectGmail();
       }
 
-      // Send to hello@madeforyoumusic.co.nz via Gmail API
+      // Send to dannaix.homes@tekura.org.nz via Gmail API
       await sendGmailEmail({
-        to: 'hello@madeforyoumusic.co.nz',
+        to: 'dannaix.homes@tekura.org.nz',
         subject: `[Customer Contact] ${subject}`,
         htmlBody: `
           <p><strong>From:</strong> ${name} (${email})</p>
@@ -89,7 +90,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ navigate }) => {
       // Also record in database
       await api.submitEnquiry({ name, email, subject, message });
 
-      setSuccess('Your message has been sent directly to hello@madeforyoumusic.co.nz via Gmail and recorded in our database!');
+      setSuccess('Your message has been sent directly to dannaix.homes@tekura.org.nz via Gmail and recorded in our database!');
       setSubject('');
       setMessage('');
     } catch (err: any) {
@@ -131,8 +132,18 @@ export const ContactPage: React.FC<ContactPageProps> = ({ navigate }) => {
               <Mail className="w-5 h-5 text-[#FF9B24] shrink-0 mt-0.5" />
               <div>
                 <p className="text-slate-300 text-[11px]">Email Address</p>
-                <a href="mailto:hello@madeforyoumusic.co.nz" className="font-bold text-white hover:underline text-sm">
-                  hello@madeforyoumusic.co.nz
+                <a href="mailto:dannaix.homes@tekura.org.nz" className="font-bold text-white hover:underline text-sm">
+                  dannaix.homes@tekura.org.nz
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Phone className="w-5 h-5 text-[#FFD52A] shrink-0 mt-0.5" />
+              <div>
+                <p className="text-slate-300 text-[11px]">Phone / Mobile</p>
+                <a href="tel:0211873347" className="font-bold text-white hover:underline text-sm">
+                  0211873347
                 </a>
               </div>
             </div>
@@ -141,7 +152,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ navigate }) => {
               <MapPin className="w-5 h-5 text-[#08BFE8] shrink-0 mt-0.5" />
               <div>
                 <p className="text-slate-300 text-[11px]">Headquarters & Location</p>
-                <p className="font-bold text-white text-sm">Aotearoa New Zealand</p>
+                <p className="font-bold text-white text-sm">Featherston, Wairarapa, Aotearoa New Zealand</p>
               </div>
             </div>
           </div>
@@ -257,7 +268,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ navigate }) => {
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-4 shadow-2xl border border-purple-100">
             <h3 className="font-bold text-lg text-slate-900">Send Enquiry from Gmail?</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
-              This will send your message directly to <strong>hello@madeforyoumusic.co.nz</strong> from your authorized Gmail account with subject <strong>"{subject}"</strong>.
+              This will send your message directly to <strong>dannaix.homes@tekura.org.nz</strong> from your authorized Gmail account with subject <strong>"{subject}"</strong>.
             </p>
             <div className="flex items-center justify-end gap-3 pt-3">
               <button

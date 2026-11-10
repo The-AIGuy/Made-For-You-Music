@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext.js';
 import { api } from '../lib/api.js';
 import { sendGmailEmail, createLyricsReadyHtml, createSongDeliveredHtml } from '../lib/gmail.js';
 import type {
+  User,
   Order,
   OrderStatus,
   OrderFile,
@@ -45,6 +46,8 @@ import {
   Mail,
   ChevronRight,
   RefreshCw,
+  UserPlus,
+  Shield,
 } from 'lucide-react';
 
 interface AdminDashboardPageProps {
@@ -52,9 +55,9 @@ interface AdminDashboardPageProps {
 }
 
 export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ navigate }) => {
-  const { user, isGoogleConnected, connectGoogle } = useAuth();
+  const { user, isGmailConnected, connectGmail } = useAuth();
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'orders' | 'customers' | 'library' | 'enquiries' | 'analytics' | 'notifications' | 'settings' | 'audit'
+    'overview' | 'orders' | 'team' | 'customers' | 'library' | 'enquiries' | 'analytics' | 'notifications' | 'settings' | 'audit'
   >('overview');
 
   // Orders state
@@ -100,8 +103,15 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ navigate
   const [songLibrary, setSongLibrary] = useState<SongLibraryItem[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [settings, setSettings] = useState<BusinessSettings | null>(null);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
 
-  // New Song Library Form
+  // Add Team Collaborator state
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState<'admin' | 'customer'>('admin');
+  const [newMemberPhone, setNewMemberPhone] = useState('');
+  const [newMemberPassword, setNewMemberPassword] = useState('');
+  const [isAddingMember, setIsAddingMember] = useState(false);
   const [newSongTitle, setNewSongTitle] = useState('');
   const [newSongGenre, setNewSongGenre] = useState('Pop');
   const [newSongMood, setNewSongMood] = useState('Romantic');
@@ -129,13 +139,14 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ navigate
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      const [ordRes, anaRes, enqRes, libRes, audRes, setRes] = await Promise.all([
+      const [ordRes, anaRes, enqRes, libRes, audRes, setRes, teamRes] = await Promise.all([
         api.getOrders(),
         api.getAnalytics(),
         api.getEnquiries(),
         api.getSongLibrary(),
         api.getAuditLogs(),
         api.getSettings(),
+        api.getTeamMembers().catch(() => ({ members: [] })),
       ]);
 
       setOrders(ordRes.orders);
@@ -144,10 +155,47 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ navigate
       setSongLibrary(libRes.songs);
       setAuditLogs(audRes.auditLogs);
       setSettings(setRes.settings);
+      setTeamMembers(teamRes.members || []);
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to load admin records.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAddTeamMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMemberEmail || !newMemberName) {
+      setErrorMsg('Name and email are required to add a team member.');
+      return;
+    }
+
+    setIsAddingMember(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
+
+    try {
+      const res = await api.addTeamMember({
+        name: newMemberName.trim(),
+        email: newMemberEmail.trim(),
+        role: newMemberRole,
+        phone: newMemberPhone.trim() || undefined,
+        password: newMemberPassword.trim() || undefined,
+      });
+
+      setSuccessMsg(res.message);
+      setNewMemberEmail('');
+      setNewMemberName('');
+      setNewMemberPhone('');
+      setNewMemberPassword('');
+
+      // Refresh team members list
+      const updated = await api.getTeamMembers();
+      setTeamMembers(updated.members);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to add team member.');
+    } finally {
+      setIsAddingMember(false);
     }
   };
 
@@ -305,8 +353,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ navigate
   // Execute Gmail Send
   const executeGmailSend = async () => {
     try {
-      if (!isGoogleConnected) {
-        await connectGoogle();
+      if (!isGmailConnected) {
+        await connectGmail();
       }
       await sendGmailEmail({
         to: gmailModal.to,
@@ -375,16 +423,16 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ navigate
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
-              if (!isGoogleConnected) connectGoogle();
+              if (!isGmailConnected) connectGmail();
             }}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 border transition-colors ${
-              isGoogleConnected
+              isGmailConnected
                 ? 'bg-emerald-950/40 text-emerald-300 border-emerald-600'
                 : 'bg-purple-900/50 text-purple-200 border-purple-700 hover:bg-purple-800'
             }`}
           >
             <Mail className="w-3.5 h-3.5" />
-            <span>{isGoogleConnected ? 'Gmail Connected' : 'Connect Gmail for Notifications'}</span>
+            <span>{isGmailConnected ? 'Gmail Dispatcher Active' : 'Enable Gmail Notifications'}</span>
           </button>
 
           <button

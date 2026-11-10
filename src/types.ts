@@ -219,6 +219,7 @@ export interface BusinessSettings {
   brandShorthand: string;
   brandAttribution: string;
   contactEmail: string;
+  phone?: string;
   location: string;
   copyright: string;
   turnaroundPersonal: string;

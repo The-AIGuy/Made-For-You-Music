@@ -144,6 +144,59 @@ apiRouter.post('/auth/login', (req, res) => {
   });
 });
 
+apiRouter.post('/auth/google', async (req, res) => {
+  const { email, name, googleUid } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required from Google sign-in.' });
+  }
+
+  let user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
+
+  if (!user) {
+    // Create new customer account for verified Google user
+    const id = `user_goog_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const randomPass = Math.random().toString(36) + Date.now().toString(36);
+    const { hash, salt } = hashPassword(randomPass);
+
+    user = {
+      id,
+      name: name?.trim() || email.split('@')[0],
+      email: email.toLowerCase().trim(),
+      passwordHash: hash,
+      salt,
+      role: 'customer',
+      createdAt: new Date().toISOString(),
+    };
+
+    db.users.push(user);
+    dbManager.persist();
+
+    // Audit log
+    db.auditLogs.unshift({
+      id: `audit_${Date.now()}`,
+      adminId: user.id,
+      adminName: user.name,
+      action: 'CUSTOMER_GOOGLE_REGISTER',
+      details: `Customer account registered via Google Authentication for ${user.email}`,
+      createdAt: new Date().toISOString(),
+    });
+    dbManager.persist();
+  }
+
+  const token = createSession(user.id);
+  return res.json({
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      createdAt: user.createdAt,
+    },
+  });
+});
+
 apiRouter.post('/auth/logout', requireAuth, (req: AuthRequest, res) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -270,10 +323,11 @@ apiRouter.post('/auth/reset-password', (req, res) => {
 
 // Secure Administrator Setup endpoint (Requires authorized setup secret key)
 apiRouter.post('/auth/setup-admin', (req, res) => {
-  const { secretKey, email, password, name } = req.body;
+  const { secretKey, setupKey, email, password, name } = req.body;
+  const key = setupKey || secretKey;
   const REQUIRED_SECRET = process.env.ADMIN_SETUP_KEY || 'M4UM-Admin-Setup-2026';
 
-  if (!secretKey || secretKey !== REQUIRED_SECRET) {
+  if (!key || key !== REQUIRED_SECRET) {
     return res.status(403).json({ error: 'Invalid administrator setup secret key.' });
   }
 
@@ -1312,4 +1366,100 @@ apiRouter.post('/gmail/log-dispatch', requireAuth, (req: AuthRequest, res) => {
 
   recordAudit(user.id, user.name, 'GMAIL_EMAIL_SENT', `Sent email (${type}) to ${toEmail} for order ${orderReference || 'N/A'}`);
   return res.json({ success: true, message: 'Email dispatch recorded.' });
+});
+
+// ==========================================
+// TEAM / COLLABORATOR MANAGEMENT (Add others into the work)
+// ==========================================
+
+apiRouter.get('/team-members', requireAdmin, (_req: AuthRequest, res) => {
+  const members = db.users.map((u) => ({
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    phone: u.phone,
+    createdAt: u.createdAt,
+  }));
+  return res.json({ members });
+});
+
+apiRouter.post('/team-members', requireAdmin, (req: AuthRequest, res) => {
+  const admin = req.user!;
+  const { email, name, role = 'admin', password, phone } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ error: 'Name and email are required to add a team member.' });
+  }
+
+  const existing = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
+  if (existing) {
+    // Elevate or update role
+    existing.role = role === 'admin' ? 'admin' : 'customer';
+    if (name) existing.name = name.trim();
+    if (phone) existing.phone = phone.trim();
+    if (password && password.length >= 8) {
+      const { hash, salt } = hashPassword(password);
+      existing.passwordHash = hash;
+      existing.salt = salt;
+    }
+    dbManager.persist();
+
+    recordAudit(
+      admin.id,
+      admin.name,
+      'TEAM_MEMBER_UPDATED',
+      `Updated team permissions for ${existing.email} (Role: ${existing.role})`
+    );
+
+    return res.json({
+      message: `User ${existing.email} is now updated with role: ${existing.role}.`,
+      member: {
+        id: existing.id,
+        name: existing.name,
+        email: existing.email,
+        role: existing.role,
+        phone: existing.phone,
+        createdAt: existing.createdAt,
+      },
+    });
+  }
+
+  // Create new team member
+  const initialPassword = password || 'M4UMProducer2026!';
+  const { hash, salt } = hashPassword(initialPassword);
+
+  const newMember = {
+    id: `user_team_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    name: name.trim(),
+    email: email.toLowerCase().trim(),
+    role: (role === 'admin' ? 'admin' : 'customer') as 'admin' | 'customer',
+    phone: phone ? phone.trim() : undefined,
+    passwordHash: hash,
+    salt,
+    createdAt: new Date().toISOString(),
+  };
+
+  db.users.push(newMember);
+  dbManager.persist();
+
+  recordAudit(
+    admin.id,
+    admin.name,
+    'TEAM_MEMBER_ADDED',
+    `Added new team collaborator: ${newMember.name} (${newMember.email}) as ${newMember.role}`
+  );
+
+  return res.status(201).json({
+    message: `Team collaborator ${newMember.name} (${newMember.email}) added successfully.`,
+    member: {
+      id: newMember.id,
+      name: newMember.name,
+      email: newMember.email,
+      role: newMember.role,
+      phone: newMember.phone,
+      createdAt: newMember.createdAt,
+    },
+    defaultPasswordNotice: password ? undefined : 'Default initial password assigned: M4UMProducer2026!',
+  });
 });

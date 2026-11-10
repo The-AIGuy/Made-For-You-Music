@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Logo } from './Logo.js';
-import { Heart, Sparkles, Shield, Mail, MapPin } from 'lucide-react';
+import { Heart, Sparkles, Shield, Mail, MapPin, Phone } from 'lucide-react';
 
 interface FooterProps {
   navigate: (path: string) => void;
@@ -26,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
             </p>
             <div className="pt-2 flex items-center gap-2 text-xs text-[#08BFE8]">
               <MapPin className="w-3.5 h-3.5" />
-              <span>Aotearoa New Zealand · Handcrafted Locally</span>
+              <span>Featherston, Wairarapa · Aotearoa New Zealand</span>
             </div>
           </div>
 
@@ -90,8 +90,14 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
             <div className="space-y-2 text-sm text-purple-200/80">
               <div className="flex items-center gap-2 text-white font-medium">
                 <Mail className="w-4 h-4 text-[#FF9B24]" />
-                <a href="mailto:hello@madeforyoumusic.co.nz" className="hover:underline">
-                  hello@madeforyoumusic.co.nz
+                <a href="mailto:dannaix.homes@tekura.org.nz" className="hover:underline">
+                  dannaix.homes@tekura.org.nz
+                </a>
+              </div>
+              <div className="flex items-center gap-2 text-white font-medium">
+                <Phone className="w-4 h-4 text-[#FFD52A]" />
+                <a href="tel:0211873347" className="hover:underline">
+                  0211873347
                 </a>
               </div>
               <p className="text-xs text-purple-300">

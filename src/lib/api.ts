@@ -74,6 +74,12 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
+  googleAuth: (payload: { email: string; name?: string; googleUid?: string }) =>
+    request<{ token: string; user: User }>('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   logout: () =>
     request<{ message: string }>('/auth/logout', {
       method: 'POST',
@@ -278,9 +284,10 @@ export const api = {
   // Audit Logs
   getAuditLogs: () => request<{ auditLogs: AuditLogEntry[] }>('/audit-logs'),
 
-  // Gmail log
-  logGmailDispatch: (payload: { toEmail: string; subject: string; type: string; orderReference?: string }) =>
-    request<{ success: boolean; message: string }>('/gmail/log-dispatch', {
+  // Team Collaboration
+  getTeamMembers: () => request<{ members: User[] }>('/team-members'),
+  addTeamMember: (payload: { name: string; email: string; role?: 'admin' | 'customer'; password?: string; phone?: string }) =>
+    request<{ message: string; member: User; defaultPasswordNotice?: string }>('/team-members', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),

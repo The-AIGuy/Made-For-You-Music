@@ -28,6 +28,15 @@
       "passwordHash": "6c25de65563e0a8865b10519a4c6914ddab3e0c584e8949eae31baf05f81ad409b8cdcb5c07b36a53ee6fb80a962d69352c8bee2ec3121e460359e378fc9f418",
       "salt": "a4530ab787cb56fcc7250f7d8e903a6b",
       "createdAt": "2026-11-09T01:41:09.873Z"
+    },
+    {
+      "id": "user_goog_1794189676661_78g3",
+      "name": "Oauth Test Customer",
+      "email": "test.oauth.customer@example.com",
+      "passwordHash": "b44e4c0cc1a02ba34646f816d8d9748055423c68b02422663d90e471669c8894615a45857d6a5cb29641e3a2c6a4727675c30efe0f1776491be0960cefed424f",
+      "salt": "f4bb696e2dbe0cd9b76dd524e653c509",
+      "role": "customer",
+      "createdAt": "2026-11-09T02:01:16.725Z"
     }
   ],
   "packages": [
@@ -493,6 +502,14 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "audit_1794189676726",
+      "adminId": "user_goog_1794189676661_78g3",
+      "adminName": "Oauth Test Customer",
+      "action": "CUSTOMER_GOOGLE_REGISTER",
+      "details": "Customer account registered via Google Authentication for test.oauth.customer@example.com",
+      "createdAt": "2026-11-09T02:01:16.726Z"
+    },
     {
       "id": "aud_1794188511955_k00qx",
       "adminId": "user_admin_01",

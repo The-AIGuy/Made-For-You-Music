@@ -26,7 +26,7 @@ interface OrderConfirmationPageProps {
 }
 
 export const OrderConfirmationPage: React.FC<OrderConfirmationPageProps> = ({ order, navigate }) => {
-  const { user, isGoogleConnected, connectGoogle } = useAuth();
+  const { user, isGmailConnected, connectGmail } = useAuth();
   const [copied, setCopied] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailStatus, setEmailStatus] = useState<string | null>(null);
@@ -58,8 +58,8 @@ export const OrderConfirmationPage: React.FC<OrderConfirmationPageProps> = ({ or
     setIsSendingEmail(true);
     setEmailStatus(null);
     try {
-      if (!isGoogleConnected) {
-        await connectGoogle();
+      if (!isGmailConnected) {
+        await connectGmail();
       }
       const html = createOrderConfirmationHtml(
         displayOrder.reference || 'M4UM-2026-XXXX',

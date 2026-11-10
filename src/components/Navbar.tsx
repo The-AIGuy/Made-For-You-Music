@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import type { Notification } from '../types.js';
 import { Logo } from './Logo.js';
 import { useAuth } from '../context/AuthContext.js';
 import {
@@ -26,7 +27,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
-  const { user, logout, notifications, unreadCount, markAsRead, markAllAsRead, isGoogleConnected, connectGoogle } = useAuth();
+  const { user, logout, notifications, unreadCount, markAsRead, markAllAsRead } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
