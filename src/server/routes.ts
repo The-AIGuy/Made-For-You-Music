@@ -522,7 +522,28 @@ apiRouter.get('/orders', requireAuth, async (req: AuthRequest, res) => {
       return res.status(503).json({ error: 'Could not load the secure order queue.' });
     }
   } else {
-    orders = db.orders.filter((order) => order.customerId === user.id);
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+    if (!supabaseUrl || !supabaseSecretKey) {
+      return res.status(503).json({ error: 'Secure order storage is not configured.' });
+    }
+    try {
+      const baseUrl = supabaseUrl.endsWith('/') ? supabaseUrl.slice(0, -1) : supabaseUrl;
+      const query = new URLSearchParams({
+        select: 'order_data',
+        'order_data->>customerId': `eq.${user.id}`,
+        order: 'created_at.desc',
+      });
+      const response = await fetch(`${baseUrl}/rest/v1/m4um_orders?${query.toString()}`, {
+        headers: { apikey: supabaseSecretKey },
+      });
+      if (!response.ok) return res.status(503).json({ error: 'Could not load your secure orders.' });
+      const rows = await response.json() as Array<{ order_data?: Order }>;
+      orders = rows.map((row) => row.order_data).filter((order): order is Order => Boolean(order && order.id && order.customerId === user.id));
+    } catch (error) {
+      console.error('[M4UM] Customer order list read failed:', error);
+      return res.status(503).json({ error: 'Could not load your secure orders.' });
+    }
   }
 
   if (user.role === 'admin') {
