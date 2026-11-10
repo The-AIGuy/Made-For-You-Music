@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+# Never commit local application data or customer records
+data/
+*.sqlite
+*.db
