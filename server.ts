@@ -16,9 +16,50 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
-  // Body parsing for JSON and file data
-  app.use(express.json({ limit: '25mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+  // Basic browser security headers.
+  app.disable('x-powered-by');
+  app.set('trust proxy', 1);
+  app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+  });
+
+  // Keep request bodies small until upload handling is redesigned securely.
+  app.use(express.json({ limit: '2mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+
+  // Production is temporarily read-only. Do not accept accounts, orders,
+  // enquiries, password resets, admin setup, or other writes until persistent
+  // storage and verified authentication are implemented and tested.
+  if (process.env.NODE_ENV === 'production') {
+    app.use('/api', (req, res, next) => {
+      if (req.method !== 'GET') {
+        return res.status(503).json({ error: 'Ordering and account features are temporarily unavailable while the service is being secured.' });
+      }
+      if (req.path === '/settings') {
+        return res.json({ settings: {
+          businessName: 'Made For You Music',
+          brandShorthand: 'M4UM',
+          brandAttribution: 'By TMG™',
+          contactEmail: '',
+          location: 'Aotearoa New Zealand',
+          copyright: '',
+          turnaroundPersonal: '3–5 business days',
+          turnaroundSignature: '3–5 business days',
+          turnaroundUltimate: '2–3 business days (Priority)',
+          enableGmailNotifications: false
+        }});
+      }
+      if (!['/packages', '/song-library'].includes(req.path)) {
+        return res.status(503).json({ error: 'This feature is temporarily unavailable while the service is being secured.' });
+      }
+      next();
+    });
+  }
 
   // API router
   app.use('/api', apiRouter);
