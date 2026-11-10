@@ -57,7 +57,10 @@ async function startServer() {
         }});
       }
       const isOrderRead = req.method === 'GET' && (req.path === '/orders' || /^\\/orders\\/[^/]+$/.test(req.path));
-      if (!(req.method === 'POST' && req.path === '/orders') && !isOrderRead && !['/packages', '/song-library', '/order-readiness'].includes(req.path)) {
+      const allowedAuthWrites = req.method === 'POST' && ['/auth/register', '/auth/login', '/auth/logout', '/auth/change-password', '/auth/setup-admin'].includes(req.path);
+      const allowedAuthReads = req.method === 'GET' && req.path === '/auth/me';
+      const allowedProfileUpdate = req.method === 'PATCH' && req.path === '/auth/update-profile';
+      if (!(req.method === 'POST' && req.path === '/orders') && !isOrderRead && !allowedAuthWrites && !allowedAuthReads && !allowedProfileUpdate && !['/packages', '/song-library', '/order-readiness'].includes(req.path)) {
         return res.status(503).json({ error: 'This feature is temporarily unavailable while the service is being secured.' });
       }
       next();
