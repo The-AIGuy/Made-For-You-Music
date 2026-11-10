@@ -32,9 +32,6 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ navigate
     try {
       const res = await api.resetPasswordRequest(email);
       setStatus(res.message);
-      if (res.previewCode) {
-        setCode(res.previewCode);
-      }
       setStep('reset');
     } catch (err: any) {
       setError(err.message || 'Unable to request password reset.');
@@ -79,8 +76,8 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ navigate
         </h1>
         <p className="text-xs text-slate-600">
           {step === 'request'
-            ? 'Enter your account email to receive a secure 6-digit recovery code.'
-            : 'Enter the 6-digit code sent to your email and your new password.'}
+            ? 'Enter your account email to receive a secure 8-digit recovery code.'
+            : 'Enter the 8-digit code sent to your email and your new password.'}
         </p>
       </div>
 
@@ -121,28 +118,30 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ navigate
               disabled={isLoading}
               className="w-full py-3 rounded-full text-white text-xs font-bold uppercase tracking-wider bg-[#421078] hover:bg-purple-900 transition-colors shadow-sm disabled:opacity-50"
             >
-              {isLoading ? 'Sending Instructions...' : 'Send Recovery Code'}
+              {isLoading ? 'Sending Instructions...' : 'Email Me a Reset Code'}
             </button>
           </form>
         ) : (
           <form onSubmit={handleResetSubmit} className="space-y-4 text-xs">
             <div className="space-y-1">
-              <label className="font-bold text-slate-700">6-Digit Verification Code</label>
+              <label className="font-bold text-slate-700">8-Digit Verification Code</label>
               <input
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="123456"
-                maxLength={6}
+                placeholder="12345678"
+                maxLength={8}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-center tracking-widest font-mono text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#421078]"
                 required
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700">New Password</label>
+              <label className="font-bold text-slate-700">New Password (min 12 characters)</label>
               <input
                 type="password"
+                minLength={12}
+                autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="••••••••"
@@ -156,7 +155,7 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ navigate
               disabled={isLoading}
               className="w-full py-3 rounded-full text-white text-xs font-bold uppercase tracking-wider bg-[#421078] hover:bg-purple-900 transition-colors shadow-sm disabled:opacity-50"
             >
-              {isLoading ? 'Updating Password...' : 'Save New Password & Sign In'}
+              {isLoading ? 'Updating Password...' : 'Save New Password'}
             </button>
 
             <button
