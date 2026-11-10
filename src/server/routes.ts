@@ -33,6 +33,27 @@ import type {
 
 export const apiRouter = Router();
 
+apiRouter.get('/order-readiness', async (_req, res) => {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+  if (!supabaseUrl || !supabaseSecretKey) {
+    return res.status(503).json({ ready: false, reason: 'Order storage configuration is missing.' });
+  }
+  try {
+    const response = await fetch(`${supabaseUrl.replace(/\\/$/, '')}/rest/v1/m4um_orders?select=id&limit=1`, {
+      headers: { apikey: supabaseSecretKey },
+    });
+    if (!response.ok) {
+      console.error('[M4UM] Order readiness check failed:', response.status);
+      return res.status(503).json({ ready: false, reason: 'Secure order storage is not reachable.' });
+    }
+    return res.json({ ready: true, mode: 'order-request-only', payment: 'not-configured' });
+  } catch (error) {
+    console.error('[M4UM] Order readiness check failed:', error);
+    return res.status(503).json({ ready: false, reason: 'Secure order storage is not reachable.' });
+  }
+});
+
 // Helper to record audit log
 function recordAudit(adminId: string, adminName: string, action: string, details: string, affectedRecordId?: string) {
   const entry: AuditLogEntry = {
