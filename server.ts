@@ -37,8 +37,10 @@ async function startServer() {
   // storage and verified authentication are implemented and tested.
   if (process.env.NODE_ENV === 'production') {
     app.use('/api', (req, res, next) => {
-      if (req.method !== 'GET') {
-        return res.status(503).json({ error: 'Ordering and account features are temporarily unavailable while the service is being secured.' });
+      // Allow only the dedicated public order-intake endpoint. All account, admin,
+      // payment, and other write routes remain disabled until their own security work is complete.
+      if (req.method !== 'GET' && !(req.method === 'POST' && req.path === '/orders')) {
+        return res.status(503).json({ error: 'This feature is temporarily unavailable while the service is being secured.' });
       }
       if (req.path === '/settings') {
         return res.json({ settings: {
