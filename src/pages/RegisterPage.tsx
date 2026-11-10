@@ -137,6 +137,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="password"
+                minLength={12}
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
