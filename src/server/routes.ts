@@ -14,6 +14,9 @@ import {
   optionalAuth,
   createSession,
   revokeSession,
+  findAccountByEmail,
+  insertAccount,
+  updateAccount,
   type AuthRequest,
 } from './auth.js';
 import type {
@@ -89,90 +92,70 @@ function sendNotification(userId: string, type: Notification['type'], title: str
 // AUTHENTICATION ROUTES
 // ==========================================
 
-apiRouter.post('/auth/register', (req, res) => {
-  const { name, email, password, phone } = req.body;
+apiRouter.post('/auth/register', async (req, res) => {
+  const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+  const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
+  const password = typeof req.body.password === 'string' ? req.body.password : '';
+  const phone = typeof req.body.phone === 'string' ? req.body.phone.trim() : '';
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Name, email, and password are required.' });
+  if (!name || !email || !password) return res.status(400).json({ error: 'Name, email, and password are required.' });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Enter a valid email address.' });
+  if (password.length < 12) return res.status(400).json({ error: 'Password must be at least 12 characters long.' });
+  if (name.length > 100 || email.length > 254 || phone.length > 40) return res.status(400).json({ error: 'One or more fields are too long.' });
+
+  try {
+    if (await findAccountByEmail(email)) return res.status(409).json({ error: 'An account with this email address already exists.' });
+    const { hash, salt } = hashPassword(password);
+    const newUser = {
+      id: `user_${crypto.randomUUID()}`,
+      name,
+      email,
+      role: 'customer' as const,
+      phone: phone || undefined,
+      passwordHash: hash,
+      salt,
+      createdAt: new Date().toISOString(),
+    };
+    await insertAccount(newUser);
+    const token = await createSession(newUser.id);
+    return res.status(201).json({
+      token,
+      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, phone: newUser.phone, createdAt: newUser.createdAt },
+    });
+  } catch (error) {
+    console.error('[M4UM] Registration failed:', error);
+    return res.status(503).json({ error: 'Account creation is temporarily unavailable. Please try again later.' });
   }
-
-  if (password.length < 8) {
-    return res.status(400).json({ error: 'Password must be at least 8 characters long.' });
-  }
-
-  const existing = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-  if (existing) {
-    return res.status(409).json({ error: 'An account with this email address already exists.' });
-  }
-
-  const { hash, salt } = hashPassword(password);
-  const newUser = {
-    id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-    name: name.trim(),
-    email: email.toLowerCase().trim(),
-    role: 'customer' as const, // Public registration is ALWAYS customer
-    phone: phone ? phone.trim() : undefined,
-    passwordHash: hash,
-    salt,
-    createdAt: new Date().toISOString(),
-  };
-
-  db.users.push(newUser);
-  dbManager.persist();
-
-  const token = createSession(newUser.id);
-  return res.status(201).json({
-    token,
-    user: {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      phone: newUser.phone,
-      createdAt: newUser.createdAt,
-    },
-  });
 });
 
-apiRouter.post('/auth/login', (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required.' });
+apiRouter.post('/auth/login', async (req, res) => {
+  const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
+  const password = typeof req.body.password === 'string' ? req.body.password : '';
+  if (!email || !password) return res.status(400).json({ error: 'Email and password are required.' });
+  try {
+    const user = await findAccountByEmail(email);
+    if (!user || !verifyPassword(password, user.passwordHash, user.salt)) {
+      return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+    const token = await createSession(user.id);
+    return res.json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, createdAt: user.createdAt },
+    });
+  } catch (error) {
+    console.error('[M4UM] Login failed:', error);
+    return res.status(503).json({ error: 'Login is temporarily unavailable. Please try again later.' });
   }
-
-  const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid email or password.' });
-  }
-
-  const isValid = verifyPassword(password, user.passwordHash, user.salt);
-  if (!isValid) {
-    return res.status(401).json({ error: 'Invalid email or password.' });
-  }
-
-  const token = createSession(user.id);
-  return res.json({
-    token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      phone: user.phone,
-      createdAt: user.createdAt,
-    },
-  });
 });
 
 apiRouter.post('/auth/google', (_req, res) => {
   return res.status(503).json({ error: 'Google sign-in is temporarily disabled until server-side identity-token verification is implemented.' });
 });
 
-apiRouter.post('/auth/logout', requireAuth, (req: AuthRequest, res) => {
+apiRouter.post('/auth/logout', requireAuth, async (req: AuthRequest, res) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
-    revokeSession(authHeader.substring(7));
+    await revokeSession(authHeader.substring(7));
   }
   return res.json({ message: 'Logged out successfully.' });
 });
@@ -181,13 +164,13 @@ apiRouter.get('/auth/me', requireAuth, (req: AuthRequest, res) => {
   return res.json({ user: req.user });
 });
 
-apiRouter.patch('/auth/update-profile', requireAuth, (req: AuthRequest, res) => {
+apiRouter.patch('/auth/update-profile', requireAuth, async (req: AuthRequest, res) => {
   const { name, phone, email } = req.body;
-  const user = db.users.find((u) => u.id === req.user!.id);
-  if (!user) return res.status(404).json({ error: 'User not found.' });
+  const user = await findAccountByEmail(req.user!.email);
+  if (!user || user.id !== req.user!.id) return res.status(404).json({ error: 'User not found.' });
 
   if (email && email.toLowerCase() !== user.email.toLowerCase()) {
-    const existing = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase() && u.id !== user.id);
+    const existing = await findAccountByEmail(email.toLowerCase().trim());
     if (existing) {
       return res.status(409).json({ error: 'Email address is already taken by another account.' });
     }
@@ -197,7 +180,7 @@ apiRouter.patch('/auth/update-profile', requireAuth, (req: AuthRequest, res) => 
   if (name) user.name = name.trim();
   if (phone !== undefined) user.phone = phone.trim();
 
-  dbManager.persist();
+  await updateAccount(user);
   return res.json({
     user: {
       id: user.id,
@@ -210,17 +193,17 @@ apiRouter.patch('/auth/update-profile', requireAuth, (req: AuthRequest, res) => 
   });
 });
 
-apiRouter.post('/auth/change-password', requireAuth, (req: AuthRequest, res) => {
+apiRouter.post('/auth/change-password', requireAuth, async (req: AuthRequest, res) => {
   const { currentPassword, newPassword } = req.body;
   if (!currentPassword || !newPassword) {
     return res.status(400).json({ error: 'Current password and new password are required.' });
   }
-  if (newPassword.length < 8) {
-    return res.status(400).json({ error: 'New password must be at least 8 characters long.' });
+  if (newPassword.length < 12) {
+    return res.status(400).json({ error: 'New password must be at least 12 characters long.' });
   }
 
-  const user = db.users.find((u) => u.id === req.user!.id);
-  if (!user) return res.status(404).json({ error: 'User not found.' });
+  const user = await findAccountByEmail(req.user!.email);
+  if (!user || user.id !== req.user!.id) return res.status(404).json({ error: 'User not found.' });
 
   if (!verifyPassword(currentPassword, user.passwordHash, user.salt)) {
     return res.status(401).json({ error: 'Current password does not match.' });
@@ -229,7 +212,7 @@ apiRouter.post('/auth/change-password', requireAuth, (req: AuthRequest, res) => 
   const { hash, salt } = hashPassword(newPassword);
   user.passwordHash = hash;
   user.salt = salt;
-  dbManager.persist();
+  await updateAccount(user);
 
   return res.json({ message: 'Password updated successfully.' });
 });
@@ -243,7 +226,7 @@ apiRouter.post('/auth/reset-password', (_req, res) => {
 });
 
 // Secure Administrator Setup endpoint (Requires authorized setup secret key)
-apiRouter.post('/auth/setup-admin', (req, res) => {
+apiRouter.post('/auth/setup-admin', async (req, res) => {
   const { secretKey, setupKey, email, password, name } = req.body;
   const key = setupKey || secretKey;
   const REQUIRED_SECRET = process.env.ADMIN_SETUP_KEY;
@@ -256,11 +239,11 @@ apiRouter.post('/auth/setup-admin', (req, res) => {
     return res.status(400).json({ error: 'Name, email, and password are required for admin setup.' });
   }
 
-  if (password.length < 8) {
-    return res.status(400).json({ error: 'Admin password must be at least 8 characters long.' });
+  if (password.length < 12) {
+    return res.status(400).json({ error: 'Admin password must be at least 12 characters long.' });
   }
 
-  let adminUser = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
+  let adminUser = await findAccountByEmail(email.toLowerCase().trim());
   const { hash, salt } = hashPassword(password);
 
   if (adminUser) {
@@ -278,13 +261,14 @@ apiRouter.post('/auth/setup-admin', (req, res) => {
       salt,
       createdAt: new Date().toISOString(),
     };
-    db.users.push(adminUser);
+    // Insert the first administrator directly into persistent account storage.
   }
 
-  dbManager.persist();
+  if (await findAccountByEmail(adminUser.email)) await updateAccount(adminUser);
+  else await insertAccount(adminUser);
   recordAudit(adminUser.id, adminUser.name, 'ADMIN_SETUP', 'Administrator account configured via secure key setup', adminUser.id);
 
-  const token = createSession(adminUser.id);
+  const token = await createSession(adminUser.id);
   return res.status(200).json({
     message: 'Administrator account configured securely.',
     token,
