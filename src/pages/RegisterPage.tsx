@@ -174,7 +174,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
         </form>
 
         <p className="text-center text-[11px] text-slate-500">
-          Use your email and password to create an account. Google sign-in is temporarily unavailable.
+          You can register with your email or continue securely with Google from the login page.
         </p>
 
         <div className="text-center pt-2 text-xs text-slate-500">
