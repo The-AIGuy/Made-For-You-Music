@@ -83,6 +83,12 @@ export async function findAccountByEmail(email: string): Promise<DbUser | null> 
   return rows[0] ? toDbUser(rows[0]) : null;
 }
 
+export async function hasAdminAccount(): Promise<boolean> {
+  const query = new URLSearchParams({ select: 'id', role: 'eq.admin', limit: '1' });
+  const rows = await supabaseRequest<Array<{ id: string }>>(`m4um_users?${query.toString()}`);
+  return rows.length > 0;
+}
+
 export async function insertAccount(user: DbUser): Promise<void> {
   await supabaseRequest('m4um_users', {
     method: 'POST',
