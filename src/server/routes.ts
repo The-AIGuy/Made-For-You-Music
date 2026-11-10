@@ -17,6 +17,7 @@ import {
   findAccountByEmail,
   insertAccount,
   updateAccount,
+  hasAdminAccount,
   type AuthRequest,
 } from './auth.js';
 import type {
@@ -256,6 +257,10 @@ apiRouter.post('/auth/setup-admin', async (req, res) => {
 
   if (!email || !password || !name) {
     return res.status(400).json({ error: 'Name, email, and password are required for admin setup.' });
+  }
+
+  if (await hasAdminAccount()) {
+    return res.status(409).json({ error: 'Administrator setup has already been completed. Use the normal administrator login.' });
   }
 
   if (password.length < 12) {
