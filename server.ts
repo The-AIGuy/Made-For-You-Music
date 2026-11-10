@@ -56,7 +56,7 @@ async function startServer() {
           enableGmailNotifications: false
         }});
       }
-      if (!['/packages', '/song-library'].includes(req.path)) {
+      if (!(req.method === 'POST' && req.path === '/orders') && !['/packages', '/song-library'].includes(req.path)) {
         return res.status(503).json({ error: 'This feature is temporarily unavailable while the service is being secured.' });
       }
       next();
