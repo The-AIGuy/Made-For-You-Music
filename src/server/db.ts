@@ -63,19 +63,6 @@ export function verifyPassword(password: string, hash: string, salt: string): bo
 
 // Initial seed data
 function getDefaultDatabase(): DatabaseSchema {
-  const adminCreds = hashPassword('AdminPass2026!');
-
-  const adminUser: DbUser = {
-    id: 'user_admin_01',
-    name: 'Dannaix Homes',
-    email: 'dannaix.homes@tekura.org.nz',
-    role: 'admin',
-    phone: '0211873347',
-    passwordHash: adminCreds.hash,
-    salt: adminCreds.salt,
-    createdAt: '2026-01-01T00:00:00.000Z',
-  };
-
   const packages: PackageInfo[] = [
     {
       id: 'personal',
@@ -176,11 +163,10 @@ function getDefaultDatabase(): DatabaseSchema {
   const settings: BusinessSettings = {
     businessName: 'Made For You Music',
     brandShorthand: 'M4UM',
-    brandAttribution: 'By TMG®',
-    contactEmail: 'dannaix.homes@tekura.org.nz',
-    phone: '0211873347',
-    location: 'Featherston, Wairarapa, Aotearoa New Zealand',
-    copyright: '© 2026 TMG Enterprises, LLC. All rights reserved.',
+    brandAttribution: 'By TMG™',
+    contactEmail: '',
+    location: 'Aotearoa New Zealand',
+    copyright: '',
     turnaroundPersonal: '3–5 business days',
     turnaroundSignature: '3–5 business days',
     turnaroundUltimate: '2–3 business days (Priority)',
@@ -188,7 +174,7 @@ function getDefaultDatabase(): DatabaseSchema {
   };
 
   return {
-    users: [adminUser],
+    users: [],
     packages,
     orders: [],
     lyrics: [],
