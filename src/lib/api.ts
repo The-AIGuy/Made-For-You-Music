@@ -112,7 +112,7 @@ export const api = {
     }),
 
   setupAdmin: (payload: { setupKey: string; name: string; email: string; password: string }) =>
-    request<{ message: string; user: User }>('/auth/setup-admin', {
+    request<{ message: string; token: string; user: User }>('/auth/setup-admin', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
