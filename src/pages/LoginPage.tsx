@@ -5,7 +5,6 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.js';
-import { api } from '../lib/api.js';
 import { Logo } from '../components/Logo.js';
 import {
   Lock,
