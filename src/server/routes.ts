@@ -36,6 +36,25 @@ import type {
 
 export const apiRouter = Router();
 
+const authAttemptWindow = new Map<string, { count: number; resetAt: number }>();
+function limitAuthAttempts(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) {
+  const key = String(req.ip || req.socket.remoteAddress || 'unknown');
+  const now = Date.now();
+  const current = authAttemptWindow.get(key);
+  if (!current || current.resetAt <= now) {
+    authAttemptWindow.set(key, { count: 1, resetAt: now + 15 * 60 * 1000 });
+    return next();
+  }
+  if (current.count >= 12) {
+    res.setHeader('Retry-After', String(Math.ceil((current.resetAt - now) / 1000)));
+    return res.status(429).json({ error: 'Too many account attempts. Please wait 15 minutes and try again.' });
+  }
+  current.count += 1;
+  next();
+}
+apiRouter.use('/auth/register', limitAuthAttempts);
+apiRouter.use('/auth/login', limitAuthAttempts);
+
 apiRouter.get('/order-readiness', async (_req, res) => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
