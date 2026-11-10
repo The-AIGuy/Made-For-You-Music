@@ -55,6 +55,7 @@ function limitAuthAttempts(req: import('express').Request, res: import('express'
 }
 apiRouter.use('/auth/register', limitAuthAttempts);
 apiRouter.use('/auth/login', limitAuthAttempts);
+apiRouter.use('/auth/setup-admin', limitAuthAttempts);
 
 apiRouter.get('/order-readiness', async (_req, res) => {
   const supabaseUrl = process.env.SUPABASE_URL;
