@@ -20,6 +20,7 @@ import { OrderConfirmationPage } from './pages/OrderConfirmationPage.js';
 import { OrderTrackingPage } from './pages/OrderTrackingPage.js';
 import { CustomerDashboardPage } from './pages/CustomerDashboardPage.js';
 import { AdminDashboardPage } from './pages/AdminDashboardPage.js';
+import { AdminSetupPage } from './pages/AdminSetupPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage.js';
@@ -115,6 +116,9 @@ function AppContent() {
         );
       }
       return <AdminDashboardPage navigate={navigate} />;
+    }
+    if (cleanPath === '/admin-setup') {
+      return <AdminSetupPage navigate={navigate} />;
     }
     if (cleanPath === '/login') {
       return <LoginPage navigate={navigate} />;
