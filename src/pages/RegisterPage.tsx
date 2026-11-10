@@ -132,7 +132,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700">Password (min 8 characters) <span className="text-red-500">*</span></label>
+            <label className="font-bold text-slate-700">Password (min 12 characters) <span className="text-red-500">*</span></label>
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
