@@ -311,7 +311,7 @@ async function sendPasswordResetEmail(to: string, code: string): Promise<void> {
 
 apiRouter.post('/auth/reset-password-request', async (req, res) => {
   const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
-  if (!/^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(email) || email.length > 254) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
     return res.status(400).json({ error: 'Enter a valid email address.' });
   }
   try {
