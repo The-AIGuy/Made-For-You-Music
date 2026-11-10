@@ -32,17 +32,11 @@ async function startServer() {
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
-  // Production is temporarily read-only. Do not accept accounts, orders,
-  // enquiries, password resets, admin setup, or other writes until persistent
-  // storage and verified authentication are implemented and tested.
+  // Production API allowlist. Authentication endpoints are enabled only where their
+  // handlers perform server-side verification and persistent storage.
   if (process.env.NODE_ENV === 'production') {
     app.use('/api', (req, res, next) => {
-      // Allow only the dedicated public order-intake endpoint. All account, admin,
-      // payment, and other write routes remain disabled until their own security work is complete.
-      if (req.method !== 'GET' && !(req.method === 'POST' && req.path === '/orders')) {
-        return res.status(503).json({ error: 'This feature is temporarily unavailable while the service is being secured.' });
-      }
-      if (req.path === '/settings') {
+      if (req.method === 'GET' && req.path === '/settings') {
         return res.json({ settings: {
           businessName: 'Made For You Music',
           brandShorthand: 'M4UM',
@@ -56,12 +50,39 @@ async function startServer() {
           enableGmailNotifications: false
         }});
       }
-      const isOrderRead = req.method === 'GET' && (req.path === '/orders' || (req.path.startsWith('/orders/') && req.path.split('/').length === 3));
-      const allowedAuthWrites = req.method === 'POST' && ['/auth/register', '/auth/login', '/auth/logout', '/auth/change-password', '/auth/setup-admin'].includes(req.path);
-      const allowedAuthReads = req.method === 'GET' && req.path === '/auth/me';
-      const allowedProfileUpdate = req.method === 'PATCH' && req.path === '/auth/update-profile';
-      const allowedAdminReads = req.method === 'GET' && ['/analytics', '/enquiries', '/audit-logs', '/team-members'].includes(req.path);
-      if (!(req.method === 'POST' && req.path === '/orders') && !isOrderRead && !allowedAuthWrites && !allowedAuthReads && !allowedProfileUpdate && !allowedAdminReads && !['/packages', '/song-library', '/order-readiness'].includes(req.path)) {
+
+      const allowedPost = [
+        '/orders',
+        '/auth/register',
+        '/auth/login',
+        '/auth/google',
+        '/auth/logout',
+        '/auth/change-password',
+        '/auth/setup-admin',
+        '/auth/reset-password-request',
+        '/auth/reset-password',
+      ];
+      const allowedGet = [
+        '/auth/me',
+        '/packages',
+        '/song-library',
+        '/order-readiness',
+        '/analytics',
+        '/enquiries',
+        '/audit-logs',
+        '/team-members',
+        '/notifications',
+      ];
+      const allowedPatch = ['/auth/update-profile'];
+      const isOrderRead = req.method === 'GET' &&
+        (req.path === '/orders' || (req.path.startsWith('/orders/') && req.path.split('/').length === 3));
+
+      const allowed =
+        (req.method === 'POST' && allowedPost.includes(req.path)) ||
+        (req.method === 'GET' && (allowedGet.includes(req.path) || isOrderRead)) ||
+        (req.method === 'PATCH' && allowedPatch.includes(req.path));
+
+      if (!allowed) {
         return res.status(503).json({ error: 'This feature is temporarily unavailable while the service is being secured.' });
       }
       next();
