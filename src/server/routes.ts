@@ -306,7 +306,7 @@ apiRouter.patch('/packages/:id', requireAdmin, (req: AuthRequest, res) => {
 // ORDER SUBMISSION & RETRIEVAL
 // ==========================================
 
-apiRouter.post('/orders', optionalAuth, (req: AuthRequest, res) => {
+apiRouter.post('/orders', optionalAuth, async (req: AuthRequest, res) => {
   const {
     packageId,
     occasion,
