@@ -122,6 +122,51 @@ export async function updateAccount(user: DbUser): Promise<void> {
   });
 }
 
+export async function createPasswordReset(userId: string, code: string): Promise<void> {
+  const existing = new URLSearchParams({ user_id: `eq.${userId}` });
+  await supabaseRequest(`m4um_password_resets?${existing.toString()}`, { method: 'DELETE' });
+  const salt = crypto.randomBytes(16).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(`${salt}:${code}`).digest('hex');
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+  await supabaseRequest('m4um_password_resets', {
+    method: 'POST',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ token_hash: tokenHash, user_id: userId, salt, expires_at: expiresAt, attempts: 0 }),
+  });
+}
+
+export async function verifyPasswordReset(userId: string, code: string): Promise<boolean> {
+  const query = new URLSearchParams({ select: 'token_hash,salt,expires_at,attempts', user_id: `eq.${userId}`, limit: '1' });
+  const rows = await supabaseRequest<Array<{ token_hash: string; salt: string; expires_at: string; attempts: number }>>(`m4um_password_resets?${query.toString()}`);
+  const reset = rows[0];
+  if (!reset) return false;
+  if (Date.now() >= new Date(reset.expires_at).getTime() || reset.attempts >= 5) {
+    const expired = new URLSearchParams({ token_hash: `eq.${reset.token_hash}` });
+    await supabaseRequest(`m4um_password_resets?${expired.toString()}`, { method: 'DELETE' });
+    return false;
+  }
+  const supplied = crypto.createHash('sha256').update(`${reset.salt}:${code}`).digest();
+  const expected = Buffer.from(reset.token_hash, 'hex');
+  const valid = supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
+  if (!valid) {
+    const attemptsQuery = new URLSearchParams({ token_hash: `eq.${reset.token_hash}` });
+    await supabaseRequest(`m4um_password_resets?${attemptsQuery.toString()}`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ attempts: reset.attempts + 1 }),
+    });
+    return false;
+  }
+  const consumed = new URLSearchParams({ token_hash: `eq.${reset.token_hash}` });
+  await supabaseRequest(`m4um_password_resets?${consumed.toString()}`, { method: 'DELETE' });
+  return true;
+}
+
+export async function revokeAllSessions(userId: string): Promise<void> {
+  const query = new URLSearchParams({ user_id: `eq.${userId}` });
+  await supabaseRequest(`m4um_sessions?${query.toString()}`, { method: 'DELETE' });
+}
+
 export async function createSession(userId: string): Promise<string> {
   const token = `m4um_${crypto.randomBytes(32).toString('hex')}`;
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
