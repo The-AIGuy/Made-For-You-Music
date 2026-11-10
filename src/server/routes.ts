@@ -490,41 +490,57 @@ apiRouter.post('/orders', optionalAuth, async (req: AuthRequest, res) => {
   });
 });
 
-apiRouter.get('/orders', requireAuth, (req: AuthRequest, res) => {
+apiRouter.get('/orders', requireAuth, async (req: AuthRequest, res) => {
   const user = req.user!;
   const { search, status, packageId, sortBy } = req.query;
 
-  let orders = db.orders;
-
-  if (user.role === 'customer') {
-    orders = orders.filter((o) => o.customerId === user.id);
+  // Guest submissions are stored in Supabase, not the process memory database.
+  // Only administrators may read the full incoming-order queue.
+  let orders: Order[];
+  if (user.role === 'admin') {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+    if (!supabaseUrl || !supabaseSecretKey) {
+      return res.status(503).json({ error: 'Secure order storage is not configured.' });
+    }
+    try {
+      const baseUrl = supabaseUrl.endsWith('/') ? supabaseUrl.slice(0, -1) : supabaseUrl;
+      const response = await fetch(`${baseUrl}/rest/v1/m4um_orders?select=order_data&order=created_at.desc`, {
+        headers: { apikey: supabaseSecretKey },
+      });
+      if (!response.ok) {
+        console.error('[M4UM] Admin order list read failed:', response.status, (await response.text()).slice(0, 500));
+        return res.status(503).json({ error: 'Could not load the secure order queue.' });
+      }
+      const rows = await response.json() as Array<{ order_data?: Order }>;
+      orders = rows.map((row) => row.order_data).filter((order): order is Order => Boolean(order && order.id && order.reference));
+    } catch (error) {
+      console.error('[M4UM] Admin order list read failed:', error);
+      return res.status(503).json({ error: 'Could not load the secure order queue.' });
+    }
   } else {
-    // Admin filtering
-    if (status && status !== 'All') {
-      orders = orders.filter((o) => o.status === status);
-    }
-    if (packageId && packageId !== 'All') {
-      orders = orders.filter((o) => o.packageId === packageId);
-    }
+    orders = db.orders.filter((order) => order.customerId === user.id);
+  }
+
+  if (user.role === 'admin') {
+    if (status && status !== 'All') orders = orders.filter((order) => order.status === status);
+    if (packageId && packageId !== 'All') orders = orders.filter((order) => order.packageId === packageId);
     if (search) {
       const q = String(search).toLowerCase();
-      orders = orders.filter(
-        (o) =>
-          o.reference.toLowerCase().includes(q) ||
-          o.customerName.toLowerCase().includes(q) ||
-          o.customerEmail.toLowerCase().includes(q) ||
-          o.recipientName.toLowerCase().includes(q)
+      orders = orders.filter((order) =>
+        order.reference.toLowerCase().includes(q) ||
+        order.customerName.toLowerCase().includes(q) ||
+        order.customerEmail.toLowerCase().includes(q) ||
+        order.recipientName.toLowerCase().includes(q)
       );
     }
   }
 
-  // Sorting
   if (sortBy === 'oldest') {
     orders = [...orders].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
   } else if (sortBy === 'price_high') {
     orders = [...orders].sort((a, b) => b.price - a.price);
   } else {
-    // default newest first
     orders = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
