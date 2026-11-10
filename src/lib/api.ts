@@ -74,7 +74,7 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
-  googleAuth: (payload: { email: string; name?: string; googleUid?: string }) =>
+  googleAuth: (payload: { idToken: string }) =>
     request<{ token: string; user: User }>('/auth/google', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -100,7 +100,7 @@ export const api = {
     }),
 
   resetPasswordRequest: (email: string) =>
-    request<{ message: string; previewCode?: string }>('/auth/reset-password-request', {
+    request<{ message: string }>('/auth/reset-password-request', {
       method: 'POST',
       body: JSON.stringify({ email }),
     }),
