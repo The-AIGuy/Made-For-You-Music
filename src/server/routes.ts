@@ -311,7 +311,7 @@ async function sendPasswordResetEmail(to: string, code: string): Promise<void> {
 
 apiRouter.post('/auth/reset-password-request', async (req, res) => {
   const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
-  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 254) {
+  if (!/^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(email) || email.length > 254) {
     return res.status(400).json({ error: 'Enter a valid email address.' });
   }
   try {
@@ -332,7 +332,7 @@ apiRouter.post('/auth/reset-password', async (req, res) => {
   const email = typeof req.body.email === 'string' ? req.body.email.toLowerCase().trim() : '';
   const code = typeof req.body.token === 'string' ? req.body.token.trim() : '';
   const newPassword = typeof req.body.newPassword === 'string' ? req.body.newPassword : '';
-  if (!email || !/^\\d{8}$/.test(code) || newPassword.length < 12) {
+  if (!email || !/^\d{8}$/.test(code) || newPassword.length < 12) {
     return res.status(400).json({ error: 'Enter the 8-digit code and a password of at least 12 characters.' });
   }
   try {
