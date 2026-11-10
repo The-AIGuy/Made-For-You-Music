@@ -127,11 +127,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error('Google Sign-In did not return a verified email.');
     }
 
-    const res = await api.googleAuth({
-      email: fUser.email,
-      name: fUser.displayName || undefined,
-      googleUid: fUser.uid,
-    });
+    const idToken = await fUser.getIdToken();
+    const res = await api.googleAuth({ idToken });
 
     setStoredToken(res.token);
     setToken(res.token);
