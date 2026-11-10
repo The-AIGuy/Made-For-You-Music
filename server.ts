@@ -56,7 +56,7 @@ async function startServer() {
           enableGmailNotifications: false
         }});
       }
-      const isOrderRead = req.method === 'GET' && (req.path === '/orders' || /^\\/orders\\/[^/]+$/.test(req.path));
+      const isOrderRead = req.method === 'GET' && (req.path === '/orders' || (req.path.startsWith('/orders/') && req.path.split('/').length === 3));
       const allowedAuthWrites = req.method === 'POST' && ['/auth/register', '/auth/login', '/auth/logout', '/auth/change-password', '/auth/setup-admin'].includes(req.path);
       const allowedAuthReads = req.method === 'GET' && req.path === '/auth/me';
       const allowedProfileUpdate = req.method === 'PATCH' && req.path === '/auth/update-profile';
