@@ -21,8 +21,10 @@ import {
   User,
   ShieldCheck,
   Image as ImageIcon,
+  Mic,
 } from 'lucide-react';
 import type { OrderPackageId } from '../types.js';
+import { VoiceTextarea } from '../components/VoiceTextarea.js';
 
 interface OrderCreatePageProps {
   navigate: (path: string, state?: any) => void;
@@ -584,42 +586,59 @@ export const OrderCreatePage: React.FC<OrderCreatePageProps> = ({ navigate, init
                 />
               </div>
 
-              <div className="space-y-1 sm:col-span-2">
-                <label className="text-xs font-bold text-slate-800">
-                  Important Memories & Stories <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  rows={3}
+              {/* Voice Typing Highlight Banner */}
+              <div className="sm:col-span-2 p-3.5 rounded-2xl bg-gradient-to-r from-purple-50 via-pink-50 to-amber-50 border border-purple-200/80 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#421078] to-[#F51B91] flex items-center justify-center text-white shrink-0 shadow-xs">
+                  <Mic className="w-4 h-4 animate-pulse" />
+                </div>
+                <div className="text-xs">
+                  <p className="font-bold text-[#421078] flex items-center gap-1.5">
+                    <span>Voice Typing Enabled</span>
+                    <span className="text-[10px] font-semibold bg-white text-purple-800 px-2 py-0.5 rounded-full border border-purple-200">
+                      New
+                    </span>
+                  </p>
+                  <p className="text-slate-600 mt-0.5">
+                    Don't want to type long stories? Just tap <strong>"Voice Type"</strong> on any section below and say what's on your mind—we'll automatically transcribe it into the box!
+                  </p>
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <VoiceTextarea
+                  id="memories"
+                  label="Important Memories & Stories"
+                  required
+                  rows={4}
                   value={formData.memories}
-                  onChange={(e) => updateField('memories', e.target.value)}
-                  placeholder="Tell us about a meaningful moment, a trip together, or a defining shared memory..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#421078] text-sm"
+                  onChange={(val) => updateField('memories', val)}
+                  placeholder="Tell us about a meaningful moment, a trip together, or a defining shared memory... (Click Voice Type above to speak instead of typing!)"
+                  helperText="The heart of your song. Mention defining trips, challenges overcome, how you met, or everyday moments you cherish."
+                  badgeText="🎤 Voice Typing"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-800">
-                  Funny Stories or Quirks (Optional)
-                </label>
-                <textarea
-                  rows={2}
+              <div>
+                <VoiceTextarea
+                  id="funnyStories"
+                  label="Funny Stories or Quirks"
+                  rows={3}
                   value={formData.funnyStories}
-                  onChange={(e) => updateField('funnyStories', e.target.value)}
-                  placeholder="That time they burnt the BBQ, put salt in the coffee..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#421078] text-sm"
+                  onChange={(val) => updateField('funnyStories', val)}
+                  placeholder="That time they burnt the BBQ, put salt in the coffee, got lost on the trail... (or tap Voice Type to speak)"
+                  badgeText="🎤 Voice Typing"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-800">
-                  Inside Jokes & Special Sayings (Optional)
-                </label>
-                <textarea
-                  rows={2}
+              <div>
+                <VoiceTextarea
+                  id="insideJokes"
+                  label="Inside Jokes & Special Sayings"
+                  rows={3}
                   value={formData.insideJokes}
-                  onChange={(e) => updateField('insideJokes', e.target.value)}
-                  placeholder="Phrases only the two of you understand..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#421078] text-sm"
+                  onChange={(val) => updateField('insideJokes', val)}
+                  placeholder="Phrases only the two of you understand, nicknames, running gags... (or tap Voice Type to speak)"
+                  badgeText="🎤 Voice Typing"
                 />
               </div>
 
@@ -826,18 +845,16 @@ export const OrderCreatePage: React.FC<OrderCreatePageProps> = ({ navigate, init
               </p>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-800">
-                What core message or feeling should the chorus deliver?
-              </label>
-              <textarea
-                rows={4}
-                value={formData.creativeDirection}
-                onChange={(e) => updateField('creativeDirection', e.target.value)}
-                placeholder="e.g. We want them to know how deeply loved they are, even when living across the ditch in Melbourne. The chorus should feel triumphant and tearful with acoustic build-up..."
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#421078] text-sm"
-              />
-            </div>
+            <VoiceTextarea
+              id="creativeDirection"
+              label="What core message or feeling should the chorus deliver?"
+              rows={4}
+              value={formData.creativeDirection}
+              onChange={(val) => updateField('creativeDirection', val)}
+              placeholder="e.g. We want them to know how deeply loved they are, even when living across the ditch in Melbourne. The chorus should feel triumphant and tearful with acoustic build-up... (Voice typing supported)"
+              helperText="Share the emotional climax, memorable moments to highlight in the chorus, or specific lyrical themes."
+              badgeText="🎤 Voice Typing"
+            />
 
             {/* Photo Uploads: ONLY FOR ULTIMATE GIFT */}
             {formData.packageId === 'ultimate' ? (

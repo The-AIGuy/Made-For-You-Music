@@ -2,41 +2,23 @@
   "users": [
     {
       "id": "user_admin_01",
-      "name": "TMG Music Producer (Admin)",
-      "email": "admin@madeforyoumusic.co.nz",
+      "name": "Dannaix Homes",
+      "email": "dannaix.homes@tekura.org.nz",
       "role": "admin",
-      "phone": "+64 21 000 0001",
+      "phone": "0211873347",
       "passwordHash": "7d3832669d136ea3ea503f4efc5ad6aed0a390de6d7696a71488c9dfae768bfdfd449b5ed78cd2c7ec712b6e7d497532c120b7839af5629d0420a5a5d0b6282d",
       "salt": "4ee53f48992303480a3cb2665eeaef34",
       "createdAt": "2026-01-01T00:00:00.000Z"
     },
     {
-      "id": "user_cust_01",
-      "name": "Sarah Jenkins",
-      "email": "sarah.jenkins@example.com",
-      "role": "customer",
-      "phone": "+64 21 555 4321",
-      "passwordHash": "ebfdd304a1b10e5f56c4ebacbe00e0ae244c968a49d0707bf8d6ad48da026f53d26f247ad5ed0ae552960279409cbc194a7e74c96d42a808f43f70c84b8a99fc",
-      "salt": "9b3a81b34ca3fe42db46a921f9c1c068",
-      "createdAt": "2026-02-15T10:00:00.000Z"
-    },
-    {
-      "id": "user_cust_1794188469873_wvxn",
-      "name": "Michael",
-      "email": "michael.silver@example.com",
-      "role": "customer",
-      "passwordHash": "6c25de65563e0a8865b10519a4c6914ddab3e0c584e8949eae31baf05f81ad409b8cdcb5c07b36a53ee6fb80a962d69352c8bee2ec3121e460359e378fc9f418",
-      "salt": "a4530ab787cb56fcc7250f7d8e903a6b",
-      "createdAt": "2026-11-09T01:41:09.873Z"
-    },
-    {
-      "id": "user_goog_1794189676661_78g3",
-      "name": "Oauth Test Customer",
-      "email": "test.oauth.customer@example.com",
-      "passwordHash": "b44e4c0cc1a02ba34646f816d8d9748055423c68b02422663d90e471669c8894615a45857d6a5cb29641e3a2c6a4727675c30efe0f1776491be0960cefed424f",
-      "salt": "f4bb696e2dbe0cd9b76dd524e653c509",
-      "role": "customer",
-      "createdAt": "2026-11-09T02:01:16.725Z"
+      "id": "user_team_1794282013796_yufr",
+      "name": "Dannaix Homes",
+      "email": "tmgtechfixers@gmail.com",
+      "role": "admin",
+      "phone": "0211873347",
+      "passwordHash": "1c9bde1cd6b324bf230cf73c8cf71d5938c6dd3efd5cc3e19208a13eee84ee64d21e95cd0735f6e6b3bfc84b3009674333ead69255588239861d5bb06bb2b3d6",
+      "salt": "2f8f2e8547c3b87e332f15fbe268d68d",
+      "createdAt": "2026-11-10T03:40:13.796Z"
     }
   ],
   "packages": [
@@ -48,12 +30,11 @@
       "inclusions": [
         "One personalised song (approx. 2–3 minutes)",
         "Original lyrics based on your submitted story",
-        "Choice of music genre & mood",
-        "1 round of lyric changes before production",
-        "Finished high-quality MP3 download",
-        "Custom digital cover artwork"
+        "Choice of genre, mood & vocal style",
+        "High-definition master MP3 download",
+        "Online streaming playback page"
       ],
-      "maxRevisions": 1,
+      "maxRevisions": 0,
       "isPopular": false,
       "active": true
     },
@@ -90,470 +71,22 @@
       "active": true
     }
   ],
-  "orders": [
-    {
-      "id": "ord_1794188469873_bc340",
-      "reference": "M4UM-2026-7820",
-      "customerId": "user_cust_1794188469873_wvxn",
-      "customerName": "Michael",
-      "customerEmail": "michael.silver@example.com",
-      "packageId": "signature",
-      "packageName": "The Signature Song",
-      "price": 54.99,
-      "occasion": "Anniversary",
-      "recipientName": "Elena & Tom",
-      "relationship": "Parents (25th Silver Wedding)",
-      "personality": "Quietly devoted, passionate sailors, always singing along to 70s rock",
-      "interests": "",
-      "memories": "Sailing through the Bay of Islands on their honeymoon and almost dropping the anchor in the wrong bay",
-      "genre": "Acoustic / Folk",
-      "mood": "Heartfelt",
-      "vocalPreference": "No preference",
-      "energy": "Warm and uplifting",
-      "length": "Approximately 2–3 minutes",
-      "creativeDirection": "",
-      "photos": [],
-      "status": "Song in Production",
-      "paymentStatus": "Not Recorded",
-      "assignedCreator": "TMG Creative Director",
-      "createdAt": "2026-11-09T01:41:09.873Z",
-      "updatedAt": "2026-11-09T01:41:51.955Z"
-    },
-    {
-      "id": "ord_101",
-      "reference": "M4UM-2026-1042",
-      "customerId": "user_cust_01",
-      "customerName": "Sarah Jenkins",
-      "customerEmail": "sarah.jenkins@example.com",
-      "customerPhone": "+64 21 555 4321",
-      "packageId": "signature",
-      "packageName": "The Signature Song",
-      "price": 54.99,
-      "occasion": "Anniversary",
-      "recipientName": "David & Sarah",
-      "relationship": "Husband & Wife (10th Anniversary)",
-      "nickname": "Davey Bear",
-      "personality": "Warm, thoughtful, always loves a bad pun, passionate tramper",
-      "interests": "Hiking the Tongariro Crossing, craft beer, indie vinyl records, golden retriever parenting",
-      "memories": "Getting caught in sudden rain at Lake Tekapo and making toast on a gas stove in the campervan",
-      "funnyStories": "When David accidentally put salt instead of sugar in our first anniversary coffee",
-      "insideJokes": "Code orange coffee, always packing 3 beanies",
-      "specialPhrases": "Ten years and ten thousand miles",
-      "includedDetails": "Mention our golden retriever Buster and our favourite camp spot at Matapouri",
-      "excludedDetails": "Do not mention his old beaten-up Subaru",
-      "genre": "Acoustic / Folk",
-      "mood": "Heartfelt",
-      "vocalPreference": "Male vocal",
-      "energy": "Warm and uplifting",
-      "length": "Approximately 3–4 minutes",
-      "creativeDirection": "Gentle fingerpicked acoustic guitar building into an uplifting chorus celebrating a decade of partnership.",
-      "photos": [],
-      "status": "Ready for Delivery",
-      "paymentStatus": "Paid",
-      "paymentReference": "TXN-NZD-5499-1042",
-      "assignedCreator": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-01T12:00:00.000Z",
-      "updatedAt": "2026-03-05T16:30:00.000Z"
-    },
-    {
-      "id": "ord_102",
-      "reference": "M4UM-2026-1099",
-      "customerId": "user_cust_01",
-      "customerName": "Sarah Jenkins",
-      "customerEmail": "sarah.jenkins@example.com",
-      "customerPhone": "+64 21 555 4321",
-      "packageId": "personal",
-      "packageName": "The Personal Song",
-      "price": 34.99,
-      "occasion": "Birthday",
-      "recipientName": "Liam Jenkins",
-      "relationship": "Brother",
-      "nickname": "Liamo",
-      "personality": "Energetic, funny, tech geek, loves rock music",
-      "interests": "Gaming, rock climbing, synthesizer jams",
-      "memories": "Building tree forts in Piha as kids",
-      "genre": "Rock",
-      "mood": "Funny",
-      "vocalPreference": "Male vocal",
-      "energy": "Energetic and exciting",
-      "length": "Approximately 2–3 minutes",
-      "creativeDirection": "Fast tempo, lighthearted cheeky rock anthem about turning 30 and still playing video games until 2 AM.",
-      "photos": [],
-      "status": "Awaiting Customer Lyric Approval",
-      "paymentStatus": "Not Recorded",
-      "assignedCreator": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-04T09:00:00.000Z",
-      "updatedAt": "2026-03-05T11:00:00.000Z"
-    }
-  ],
-  "lyrics": [
-    {
-      "id": "lyr_01",
-      "orderId": "ord_101",
-      "versionNumber": 1,
-      "title": "Ten Years & Ten Thousand Miles",
-      "content": "[Verse 1]\nFrom that rainy afternoon up at Tekapo\nMaking burnt toast on the camping stove\nYou handed me that coffee with a sideways smile\nSaid, \"Pack another beanie, we've got another mile.\"\n\n[Chorus]\nTen years, ten thousand miles, and a golden dog named Buster\nYou're the quiet compass and the light that I can trust in\nThrough the mountain ridges and the stormy coastal skies\nI'd hike every single trail looking in your eyes.\n\n[Verse 2]\nNow we laugh about the salty coffee mornings\nAnd the campervan that barely made the climb\nAt Matapouri beach where the gentle tide is calling\nEvery single memory feels sweeter over time.\n\n[Bridge]\nThey say time goes fast when the love is true\nI'd walk the crossing all over again with you.\n\n[Chorus]\nTen years, ten thousand miles, and a golden dog named Buster\nYou're the quiet compass and the light that I can trust in\nThrough the mountain ridges and the stormy coastal skies\nI'd hike every single trail looking in your eyes.\n\n[Outro]\nCode orange coffee, laughter in the rain\nHere's to ten more years and starting once again.",
-      "status": "approved",
-      "notes": "Initial approved version incorporating the campervan and Buster.",
-      "createdBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-02T10:00:00.000Z",
-      "sharedAt": "2026-03-02T11:00:00.000Z",
-      "approvedAt": "2026-03-02T15:20:00.000Z"
-    },
-    {
-      "id": "lyr_02",
-      "orderId": "ord_102",
-      "versionNumber": 1,
-      "title": "Level Thirty (The Ballad of Liamo)",
-      "content": "[Verse 1]\nBack in Piha treehouse days, you were the captain of the crew\nScraped knees on the pohutukawa, nothing we couldn't do\nNow you're turning the big three-zero with a brand new gaming rig\nDrinking cold brew in the morning, acting moderately big!\n\n[Chorus]\nHappy Birthday Liam, you've unlocked level thirty!\nStill climbing up the boulders, still playing dirty\nLate night discord lobbies, synthesizers humming loud\nThirty years of being awesome, you make everybody proud!\n\n[Verse 2]\nYou swear you'll sleep at midnight, but you find another quest\nBuilding synth tracks on the weekend, giving sleep a little rest\nFrom tree forts to tech support, you haven't lost the spark\nA little older, just as funny, illuminating the dark!\n\n[Chorus]\nHappy Birthday Liam, you've unlocked level thirty!\nStill climbing up the boulders, still playing dirty\nLate night discord lobbies, synthesizers humming loud\nThirty years of being awesome, you make everybody proud!",
-      "status": "shared",
-      "notes": "Shared with Sarah for her review before music production begins.",
-      "createdBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-05T09:30:00.000Z",
-      "sharedAt": "2026-03-05T10:00:00.000Z"
-    },
-    {
-      "id": "lyr_1794188486320_4lcm",
-      "orderId": "ord_1794188469873_bc340",
-      "versionNumber": 1,
-      "title": "Silver Seas & Bay of Islands",
-      "content": "[Verse 1]\nTwenty-five years on the ocean blue\n[Chorus]\nAnchored in love with you",
-      "status": "approved",
-      "createdBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-11-09T01:41:26.320Z",
-      "sharedAt": "2026-11-09T01:41:30.397Z",
-      "approvedAt": "2026-11-09T01:41:35.045Z"
-    }
-  ],
+  "orders": [],
+  "lyrics": [],
   "revisions": [],
-  "statusHistory": [
-    {
-      "id": "sh_1794188469873_lgcz",
-      "orderId": "ord_1794188469873_bc340",
-      "previousStatus": "None",
-      "newStatus": "New Order",
-      "changedBy": "Michael",
-      "note": "Order submitted online by customer",
-      "createdAt": "2026-11-09T01:41:09.873Z"
-    },
-    {
-      "id": "sh_01",
-      "orderId": "ord_101",
-      "previousStatus": "None",
-      "newStatus": "New Order",
-      "changedBy": "System",
-      "note": "Order submitted online by customer",
-      "createdAt": "2026-03-01T12:00:00.000Z"
-    },
-    {
-      "id": "sh_02",
-      "orderId": "ord_101",
-      "previousStatus": "New Order",
-      "newStatus": "Writing Lyrics",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Creative brief assigned and lyric drafting started",
-      "createdAt": "2026-03-01T14:30:00.000Z"
-    },
-    {
-      "id": "sh_03",
-      "orderId": "ord_101",
-      "previousStatus": "Writing Lyrics",
-      "newStatus": "Awaiting Customer Lyric Approval",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Shared Version 1 lyrics with Sarah",
-      "createdAt": "2026-03-02T11:00:00.000Z"
-    },
-    {
-      "id": "sh_04",
-      "orderId": "ord_101",
-      "previousStatus": "Awaiting Customer Lyric Approval",
-      "newStatus": "Lyrics Approved",
-      "changedBy": "Sarah Jenkins",
-      "note": "Customer approved Version 1 lyrics without revisions",
-      "createdAt": "2026-03-02T15:20:00.000Z"
-    },
-    {
-      "id": "sh_05",
-      "orderId": "ord_101",
-      "previousStatus": "Lyrics Approved",
-      "newStatus": "Song in Production",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Audio arrangement and acoustic production in progress",
-      "createdAt": "2026-03-03T09:00:00.000Z"
-    },
-    {
-      "id": "sh_06",
-      "orderId": "ord_101",
-      "previousStatus": "Song in Production",
-      "newStatus": "Ready for Delivery",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Master MP3 and lyrics PDF uploaded for customer download",
-      "createdAt": "2026-03-05T16:30:00.000Z"
-    },
-    {
-      "id": "sh_07",
-      "orderId": "ord_102",
-      "previousStatus": "None",
-      "newStatus": "New Order",
-      "changedBy": "System",
-      "note": "Order submitted online by customer",
-      "createdAt": "2026-03-04T09:00:00.000Z"
-    },
-    {
-      "id": "sh_08",
-      "orderId": "ord_102",
-      "previousStatus": "New Order",
-      "newStatus": "Awaiting Customer Lyric Approval",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Lyrics Version 1 ready for Sarah to review",
-      "createdAt": "2026-03-05T10:00:00.000Z"
-    },
-    {
-      "id": "sh_1794188490397_l7jb",
-      "orderId": "ord_1794188469873_bc340",
-      "previousStatus": "Awaiting Customer Lyric Approval",
-      "newStatus": "Awaiting Customer Lyric Approval",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Shared lyrics version 1 (\"Silver Seas & Bay of Islands\") with customer for approval.",
-      "createdAt": "2026-11-09T01:41:30.397Z"
-    },
-    {
-      "id": "sh_1794188495045_8pvp",
-      "orderId": "ord_1794188469873_bc340",
-      "previousStatus": "Awaiting Customer Lyric Approval",
-      "newStatus": "Lyrics Approved",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Customer approved lyric version 1 (\"Silver Seas & Bay of Islands\").",
-      "createdAt": "2026-11-09T01:41:35.045Z"
-    },
-    {
-      "id": "sh_1794188511955_xawa",
-      "orderId": "ord_1794188469873_bc340",
-      "previousStatus": "Lyrics Approved",
-      "newStatus": "Song in Production",
-      "changedBy": "TMG Music Producer (Admin)",
-      "note": "Status changed from Lyrics Approved to Song in Production",
-      "createdAt": "2026-11-09T01:41:51.955Z"
-    }
-  ],
-  "files": [
-    {
-      "id": "fl_01",
-      "orderId": "ord_101",
-      "fileName": "Ten_Years_and_Ten_Thousand_Miles_Master.mp3",
-      "fileUrl": "/api/files/download/fl_01",
-      "fileType": "mp3",
-      "fileSize": 4890000,
-      "version": "v1.0-final",
-      "isCustomerVisible": true,
-      "uploadedBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-05T16:00:00.000Z"
-    },
-    {
-      "id": "fl_02",
-      "orderId": "ord_101",
-      "fileName": "Ten_Years_Printable_Lyrics.pdf",
-      "fileUrl": "/api/files/download/fl_02",
-      "fileType": "printable_sheet",
-      "fileSize": 1240000,
-      "version": "v1.0",
-      "isCustomerVisible": true,
-      "uploadedBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-05T16:15:00.000Z"
-    },
-    {
-      "id": "fl_03",
-      "orderId": "ord_101",
-      "fileName": "Custom_Digital_Cover_Art.png",
-      "fileUrl": "/api/files/download/fl_03",
-      "fileType": "cover_art",
-      "fileSize": 2150000,
-      "version": "v1.0",
-      "isCustomerVisible": true,
-      "uploadedBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-05T16:20:00.000Z"
-    },
-    {
-      "id": "fl_04_int",
-      "orderId": "ord_101",
-      "fileName": "Acoustic_Stems_StemMix_Internal.wav",
-      "fileUrl": "/api/files/download/fl_04_int",
-      "fileType": "wav",
-      "fileSize": 45000000,
-      "version": "stems-internal",
-      "isCustomerVisible": false,
-      "uploadedBy": "TMG Music Producer (Admin)",
-      "createdAt": "2026-03-04T15:00:00.000Z"
-    }
-  ],
-  "messages": [
-    {
-      "id": "msg_01",
-      "orderId": "ord_101",
-      "senderId": "user_admin_01",
-      "senderName": "TMG Music Producer",
-      "senderRole": "admin",
-      "message": "Client requested warm folk guitar tone reminiscent of Crowded House meets Vance Joy.",
-      "isInternal": true,
-      "createdAt": "2026-03-01T14:00:00.000Z"
-    },
-    {
-      "id": "msg_02",
-      "orderId": "ord_101",
-      "senderId": "user_admin_01",
-      "senderName": "M4UM Production Team",
-      "senderRole": "admin",
-      "message": "Kia ora Sarah! Your song has finished sound engineering and quality check. You can listen and download your finished files now.",
-      "isInternal": false,
-      "createdAt": "2026-03-05T16:30:00.000Z"
-    }
-  ],
-  "notifications": [
-    {
-      "id": "notif_1794188511955_602ee",
-      "userId": "user_cust_1794188469873_wvxn",
-      "type": "order",
-      "title": "Song in Production!",
-      "message": "Your approved lyrics are now in audio production and sound engineering.",
-      "orderId": "ord_1794188469873_bc340",
-      "isRead": false,
-      "createdAt": "2026-11-09T01:41:51.955Z"
-    },
-    {
-      "id": "notif_1794188495045_1u1k5",
-      "userId": "user_admin_01",
-      "type": "lyric",
-      "title": "Lyrics Approved by Customer!",
-      "message": "TMG Music Producer (Admin) approved version 1 for order M4UM-2026-7820. Production can now begin.",
-      "orderId": "ord_1794188469873_bc340",
-      "isRead": false,
-      "createdAt": "2026-11-09T01:41:35.045Z"
-    },
-    {
-      "id": "notif_1794188490397_olho1",
-      "userId": "user_cust_1794188469873_wvxn",
-      "type": "lyric",
-      "title": "Lyrics Ready for Review!",
-      "message": "Your lyrics for Elena & Tom (Version 1) are ready to review and approve.",
-      "orderId": "ord_1794188469873_bc340",
-      "isRead": false,
-      "createdAt": "2026-11-09T01:41:30.397Z"
-    },
-    {
-      "id": "notif_1794188469874_xi735",
-      "userId": "user_admin_01",
-      "type": "order",
-      "title": "New Song Order Placed",
-      "message": "New order M4UM-2026-7820 by Michael for Elena & Tom (The Signature Song).",
-      "orderId": "ord_1794188469873_bc340",
-      "isRead": false,
-      "createdAt": "2026-11-09T01:41:09.874Z"
-    },
-    {
-      "id": "notif_1794188469873_ei9wc",
-      "userId": "user_cust_1794188469873_wvxn",
-      "type": "order",
-      "title": "Order Received!",
-      "message": "Your order for Elena & Tom (The Signature Song) has been received. Reference: M4UM-2026-7820.",
-      "orderId": "ord_1794188469873_bc340",
-      "isRead": false,
-      "createdAt": "2026-11-09T01:41:09.873Z"
-    },
-    {
-      "id": "notif_01",
-      "userId": "user_cust_01",
-      "type": "delivery",
-      "title": "Your Song is Ready for Delivery!",
-      "message": "Ten Years & Ten Thousand Miles has completed production. Download your finished files now.",
-      "orderId": "ord_101",
-      "isRead": false,
-      "createdAt": "2026-03-05T16:30:00.000Z"
-    },
-    {
-      "id": "notif_02",
-      "userId": "user_cust_01",
-      "type": "lyric",
-      "title": "Lyrics Ready for Your Review",
-      "message": "Lyrics Version 1 for order M4UM-2026-1099 are ready. Please review and approve or request revisions.",
-      "orderId": "ord_102",
-      "isRead": false,
-      "createdAt": "2026-03-05T10:00:00.000Z"
-    },
-    {
-      "id": "notif_03",
-      "userId": "user_admin_01",
-      "type": "order",
-      "title": "New Order Received",
-      "message": "Order M4UM-2026-1099 (The Personal Song) placed by Sarah Jenkins.",
-      "orderId": "ord_102",
-      "isRead": true,
-      "createdAt": "2026-03-04T09:00:00.000Z"
-    }
-  ],
-  "enquiries": [
-    {
-      "id": "enq_01",
-      "name": "James Wilson",
-      "email": "james.wilson@example.nz",
-      "subject": "Inquiry regarding 50th golden wedding anniversary",
-      "message": "Kia ora team, we are planning a 50th wedding anniversary for our parents in Christchurch. Can we include multiple voice perspectives in The Ultimate Gift package?",
-      "status": "new",
-      "createdAt": "2026-03-06T08:15:00.000Z"
-    }
-  ],
+  "statusHistory": [],
+  "files": [],
+  "messages": [],
+  "notifications": [],
+  "enquiries": [],
   "auditLogs": [
     {
-      "id": "audit_1794189676726",
-      "adminId": "user_goog_1794189676661_78g3",
-      "adminName": "Oauth Test Customer",
-      "action": "CUSTOMER_GOOGLE_REGISTER",
-      "details": "Customer account registered via Google Authentication for test.oauth.customer@example.com",
-      "createdAt": "2026-11-09T02:01:16.726Z"
-    },
-    {
-      "id": "aud_1794188511955_k00qx",
+      "id": "aud_1794282013797_9znsm",
       "adminId": "user_admin_01",
-      "adminName": "TMG Music Producer (Admin)",
-      "action": "STATUS_CHANGE",
-      "details": "Changed status of M4UM-2026-7820 from Lyrics Approved to Song in Production",
-      "affectedRecordId": "ord_1794188469873_bc340",
-      "createdAt": "2026-11-09T01:41:51.955Z"
-    },
-    {
-      "id": "aud_1794188490397_6pche",
-      "adminId": "user_admin_01",
-      "adminName": "TMG Music Producer (Admin)",
-      "action": "SHARE_LYRIC",
-      "details": "Shared version 1 for M4UM-2026-7820",
-      "affectedRecordId": "ord_1794188469873_bc340",
-      "createdAt": "2026-11-09T01:41:30.397Z"
-    },
-    {
-      "id": "aud_1794188486320_b67mm",
-      "adminId": "user_admin_01",
-      "adminName": "TMG Music Producer (Admin)",
-      "action": "CREATE_LYRIC_DRAFT",
-      "details": "Created draft version 1 for M4UM-2026-7820",
-      "affectedRecordId": "ord_1794188469873_bc340",
-      "createdAt": "2026-11-09T01:41:26.320Z"
-    },
-    {
-      "id": "aud_01",
-      "adminId": "user_admin_01",
-      "adminName": "TMG Music Producer (Admin)",
-      "action": "STATUS_CHANGE",
-      "details": "Changed status of M4UM-2026-1042 to Ready for Delivery",
-      "affectedRecordId": "ord_101",
-      "createdAt": "2026-03-05T16:30:00.000Z"
-    },
-    {
-      "id": "aud_02",
-      "adminId": "user_admin_01",
-      "adminName": "TMG Music Producer (Admin)",
-      "action": "LYRIC_SHARED",
-      "details": "Shared lyric draft v1 with customer for M4UM-2026-1099",
-      "affectedRecordId": "ord_102",
-      "createdAt": "2026-03-05T10:00:00.000Z"
+      "adminName": "Dannaix Homes",
+      "action": "TEAM_MEMBER_ADDED",
+      "details": "Added new team collaborator: Dannaix Homes (tmgtechfixers@gmail.com) as admin",
+      "createdAt": "2026-11-10T03:40:13.797Z"
     }
   ],
   "songLibrary": [
@@ -604,8 +137,9 @@
     "businessName": "Made For You Music",
     "brandShorthand": "M4UM",
     "brandAttribution": "By TMG®",
-    "contactEmail": "hello@madeforyoumusic.co.nz",
-    "location": "Aotearoa New Zealand",
+    "contactEmail": "dannaix.homes@tekura.org.nz",
+    "phone": "0211873347",
+    "location": "Featherston, Wairarapa, Aotearoa New Zealand",
     "copyright": "© 2026 TMG Enterprises, LLC. All rights reserved.",
     "turnaroundPersonal": "3–5 business days",
     "turnaroundSignature": "3–5 business days",

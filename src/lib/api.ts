@@ -284,6 +284,13 @@ export const api = {
   // Audit Logs
   getAuditLogs: () => request<{ auditLogs: AuditLogEntry[] }>('/audit-logs'),
 
+  // Gmail log
+  logGmailDispatch: (payload: { toEmail: string; subject: string; type: string; orderReference?: string }) =>
+    request<{ success: boolean; message: string }>('/gmail/log-dispatch', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   // Team Collaboration
   getTeamMembers: () => request<{ members: User[] }>('/team-members'),
   addTeamMember: (payload: { name: string; email: string; role?: 'admin' | 'customer'; password?: string; phone?: string }) =>
