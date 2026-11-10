@@ -40,7 +40,7 @@ apiRouter.get('/order-readiness', async (_req, res) => {
     return res.status(503).json({ ready: false, reason: 'Order storage configuration is missing.' });
   }
   try {
-    const response = await fetch(`${supabaseUrl.replace(/\\/$/, '')}/rest/v1/m4um_orders?select=id&limit=1`, {
+    const response = await fetch(`${(supabaseUrl.endsWith('/') ? supabaseUrl.slice(0, -1) : supabaseUrl)}/rest/v1/m4um_orders?select=id&limit=1`, {
       headers: { apikey: supabaseSecretKey },
     });
     if (!response.ok) {
@@ -422,7 +422,7 @@ apiRouter.post('/orders', optionalAuth, async (req: AuthRequest, res) => {
   }
 
   try {
-    const supabaseResponse = await fetch(`${supabaseUrl.replace(/\\/$/, '')}/rest/v1/m4um_orders`, {
+    const supabaseResponse = await fetch(`${(supabaseUrl.endsWith('/') ? supabaseUrl.slice(0, -1) : supabaseUrl)}/rest/v1/m4um_orders`, {
       method: 'POST',
       headers: {
         'apikey': supabaseSecretKey,
